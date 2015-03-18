@@ -15,7 +15,6 @@ public class AntMapGenerator {
     
     int height;
     int width;
-    //Cell[][] map;
     Map map;
     Point[] redAnthill;
     Point[] blackAnthill;
@@ -23,22 +22,7 @@ public class AntMapGenerator {
     public AntMapGenerator(int height, int width) {
         this.height = height;
         this.width = width;
-        //map = new Cell[height][width];
         map = new Map(height, width);
-        /*
-        for (int i = 0; i < height; i++){
-            for (int j = 0; j < width; j++) {
-                Marker[] redMarkers = new Marker[100];
-                Marker[] blackMarkers = new Marker[100];
-                if (i == 0 || j == 0 || i == height-1 || j == width-1) {
-                    map.cells[i][j] = new Cell(0, true, false, redMarkers, blackMarkers);
-                } else {
-                    map.cells[i][j] = new Cell(0, false, false, redMarkers, blackMarkers);
-                }
-            }
-        }
-        * 
-        */
     }
 
     /**
@@ -68,7 +52,7 @@ public class AntMapGenerator {
         //a.map[0][5].setHasFood(true);
         //a.map[5][0] = 2;
         a.placeAnthills();
-        a.printMap();
+        a.map.printMap();
         //a.makeRedAnthill();
         //a.makeAnthill();
         
@@ -293,21 +277,5 @@ public class AntMapGenerator {
         
         return randomNum;
     }
-     
-    public void printMap () {
-        System.out.println(width);
-        System.out.println(height);
-        for (int i = 0; i < height; i++) {
-            String s = "";
-            if (i % 2 != 0) {
-                s += " ";
-            }            
-            for (int j = 0; j < width; j++) {
-                s += " " + map.cells[i][j];
-            }
-            System.out.println(s);
-        }
-    }
-
 
 }
