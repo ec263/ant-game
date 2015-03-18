@@ -58,10 +58,20 @@ public class AntMapGenerator {
         
     }
     
+    /**
+     * 
+     * @return the map
+     */
     public Map getMap() {
         return map;
     }
     
+    /**
+     * 
+     * @param x
+     * @param y
+     * @return Cell at (x, y)
+     */
     public Cell getCell (int x, int y) {
         return map.cells[y][x];
     }
@@ -75,6 +85,11 @@ public class AntMapGenerator {
         return false;
     }
     
+    /**
+     * This will probably end up in another class
+     * @param p
+     * @return 
+     */
     public boolean rocky (Point p) {
         if (map.cells[p.y][p.x].rocky) {
             return true;
@@ -83,6 +98,11 @@ public class AntMapGenerator {
             return false;
     }
     
+    /**
+     * This will probably go in another class
+     * @param p
+     * @return 
+     */
     public boolean someAntIsAt (Point p) {
         if (map.cells[p.y][p.x].occupied) {
             return true;
@@ -91,8 +111,12 @@ public class AntMapGenerator {
             return false;
     }
     
+    /**
+     * 
+     * @return an array of Points for an anthill (hexagon of side 7)
+     */
     public Point[] makeAnthill() {
-        Point[] anthill;
+        Point[] anthill = new Point[127];
         
         int x = randInt(1,148);
         int y = randInt(1,148);
@@ -105,8 +129,6 @@ public class AntMapGenerator {
         
         System.out.println("Centre: (" + x + ", " + y + ")");
         
-        //Point centre = new Point(x, y);
-        
         if (y % 2 == 0) {
             offset = -1;
             //anthill = makeEvenYAnthill(new Point (x, y));
@@ -115,8 +137,6 @@ public class AntMapGenerator {
             offset = 0;
             //anthill = makeOddYAnthill(new Point (x, y));
         }
-        
-        anthill = new Point[127];
         
         int counter = 0;
         
@@ -176,6 +196,9 @@ public class AntMapGenerator {
         return anthill;
     }
     
+    /**
+     * places the anthills on the map
+     */
     public void placeAnthills() {
         Point[] redAnthill = makeAnthill();
         Point[] blackAnthill = makeAnthill();
@@ -230,6 +253,10 @@ public class AntMapGenerator {
         
     }
     
+    /**
+     * UNDER CONTSTRUCTION
+     * @return an array of Points for a foodblob.
+     */
     public Point[] makeFoodBlob() {
         Point[] foodBlob = new Point[25];
         
@@ -270,6 +297,12 @@ public class AntMapGenerator {
         return foodBlob;
     }
     
+    /**
+     * 
+     * @param min
+     * @param max
+     * @return random int between min and max
+     */
     public static int randInt(int min, int max) {
         Random rand = new Random();
         
