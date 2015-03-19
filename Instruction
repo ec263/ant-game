@@ -1,0 +1,105 @@
+
+/**
+ *
+ * @author Zachary Hoad
+ */
+public class Instruction {
+    
+}
+
+enum Direction{
+    HERE, AHEAD, LEFTAHEAD, RIGHTAHEAD
+}
+
+enum Condition{
+    FRIEND, FOE, FRIENDWITHFOOD, FOEWITHFOOD, FOOD, ROCK, MARKER, FOEMARKER, HOME, FOEHOME;
+    public int markerNum;
+}
+
+class Sense extends Instruction{
+    public Direction sensedir;
+    public int st1;
+    public int st2;
+    public Condition cond;
+    
+    public Sense(Direction sensedir, int st1, int st2, Condition cond){
+        this.sensedir=sensedir;
+        this.st1=st1;
+        this.st2=st2;
+        this.cond=cond;
+    }
+}
+
+class Mark extends Instruction{
+    public int i;
+    public int st;
+    
+    public Mark(int i, int st){
+        this.i=i;
+        this.st=st;
+    }
+}
+
+class Unmark extends Instruction{
+    public int st;
+    public int i;
+    
+    public Unmark(int i, int st){
+        this.st=st;
+        this.i=i;
+    }
+}
+
+class PickUp extends Instruction{
+    public int st1;
+    public int st2;
+    
+    public PickUp(int st1, int st2){
+        this.st1=st1;
+        this.st2=st2;
+    }
+}
+
+class Drop extends Instruction{
+    public int st;
+    
+    public Drop(int st){
+        this.st=st;
+    }
+}
+
+enum leftOrRight{
+    LEFT, RIGHT
+}
+
+class Turn extends Instruction{
+    public int st;
+    public leftOrRight lr;
+    
+    public Turn(int st, leftOrRight lr){
+        this.st=st;
+        this.lr=lr;
+    }
+}
+
+class Move extends Instruction{
+    public int st1;
+    public int st2;
+    
+    public Move(int st1, int st2){
+        this.st1=st1;
+        this.st2=st2;
+    }
+}
+
+class Flip extends Instruction{
+    public int n;
+    public int st1;
+    public int st2;
+    
+    public Flip(int n, int st1, int st2){
+        this.n=n;
+        this.st1=st1;
+        this.st2=st2;
+    }
+}
