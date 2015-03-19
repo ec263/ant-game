@@ -52,6 +52,7 @@ public class AntMapGenerator {
         //a.map[0][5].setHasFood(true);
         //a.map[5][0] = 2;
         a.placeAnthills();
+        a.placeFoodBlobs();
         a.map.printMap();
         //a.makeRedAnthill();
         //a.makeAnthill();
@@ -77,12 +78,42 @@ public class AntMapGenerator {
     }
     
     //under construction
-    public boolean checkAdjacentCells(Point p) {
-        boolean ok;
+    public boolean checkPlaceable(Point p) {
+        //boolean ok;
         int x = p.x;
         int y = p.y;
+        int offset;
+        Point[] points = new Point[7];
         
-        return false;
+        //offset -1 if y is even
+        if (y % 2 == 0) {
+            offset = -1;
+        }
+        else
+            offset = 0;
+        
+        points[0] = new Point(x + offset, y-1);
+        points[1] = new Point(x + 1 + offset, y-1);
+        points[2] = new Point(x - 1, y);
+        points[3] = new Point(x, y);
+        points[4] = new Point(x + 1, y);
+        points[5] = new Point(x + offset, y + 1);
+        points[6] = new Point(x + 1 + offset, y + 1);
+        
+        //check the cell and surrounding cells for stuff
+        //return false if stuff is found
+        //return true if cell and surrounding cells are clear
+        //i.e. the element can be placed
+        for (Point pt: points) {
+            if(map.getCell(pt).hasNonFoodElement()) {
+                return false;
+            }
+            if(map.getCell(pt).hasFood != 0) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     /**
@@ -122,7 +153,7 @@ public class AntMapGenerator {
         int y = randInt(1,148);
         int offset;
         
-        while (x-6 < 0 || x+6 > 149 || y-6 < 0 || y+6 > 149) {
+        while (x-6 <= 1 || x+6 >= 148 || y-6 <= 1 || y+6 >= 148) {
             x = randInt(1,148);
             y = randInt(1,148);
         }
@@ -222,16 +253,16 @@ public class AntMapGenerator {
         
         while (!ok) {
             if (black.x < red.x + 14) {
-                ok = false;
+                blackAnthill = makeAnthill();
             }
             else if (black.x > red.x -14) {
-                ok = false;
+                blackAnthill = makeAnthill();
             }
             else if (black.y > red.y - 14) {
-                ok = false;
+                blackAnthill = makeAnthill();
             }
             else if (black.y < red.y + 14) {
-                ok = false;
+                blackAnthill = makeAnthill();
             }
             else
                 ok = true;
@@ -262,39 +293,102 @@ public class AntMapGenerator {
         
         int x = randInt(1, 149);
         int y = randInt(1, 149);
+        
+        while (x-6 <= 0 || x+6 >= 149 || y-6 <= 0 || y+6 >= 149) {
+            x = randInt(1,148);
+            y = randInt(1,148);
+        }
+        
+        int rightOrLeft = randInt(0,1);
         int offset;
+        int[] leftOffset = new int[5];
+        boolean ok = false;
+        
+        //if the foodBlob is left oriented
+        if (rightOrLeft == 1) {
+            leftOffset[0] = 0;
+            leftOffset[1] = -1;
+            leftOffset[2] = -2;
+            leftOffset[3] = -3;
+            leftOffset[4] = -4;
+        }
+        else {
+            for (int n: leftOffset){
+                leftOffset[n] = 0;
+            }
+        }
         
         if (y % 2 == 0) {
             offset = -1;
         }
-        else {
+        else
             offset = 0;
-        }
         
         int counter = 0;
         
-        for (int i = x-3; i< x+1; i++) {
-            foodBlob[counter] = new Point(i, y-2);
+        for (int i = x-3; i< x+2; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[0], y-2);
             counter++;
         }
-        for (int i = x-3+offset; i < x+1+offset; i++) {
-            foodBlob[counter] = new Point(i, y-1);
+        for (int i = x-2+offset; i < x+3+offset; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[1], y-1);
             counter++;
         }
-        for (int i = x-2; i < x+2; i++) {
-            foodBlob[counter] = new Point(i, y);
+        for (int i = x-2; i < x+3; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[2], y);
             counter++;
         }
-        for (int i = x-2+offset; i < x+2+offset; i++) {
-            foodBlob[counter] = new Point(i, y+1);
+        for (int i = x-1+offset; i < x+4+offset; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[3], y+1);
             counter++;
         }
-        for (int i = x-1; i < x+3; i++) {
-            foodBlob[counter] = new Point(i, y +2);
+        for (int i = x-1; i < x+4; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[4], y +2);
             counter++;
+        }
+        System.out.println("counter: " + counter);
+        
+        for (Point p: foodBlob) {
+            if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149) {
+                foodBlob = makeFoodBlob();
+            }
+        }
+        
+        while (!ok) {
+            System.out.println("while");
+            for (Point p: foodBlob) {
+                if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149) {
+                    foodBlob = makeFoodBlob();
+                    break;
+                }
+            }
+            break;
+        }
+        
+        for (Point p: foodBlob) {
+            //System.out.println(p);
+            //if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149 ) {
+                //System.out.println("x, y : " + p.x + ", " + p.y);
+                //break;
+            //}
+            if (!checkPlaceable(p)) {
+                foodBlob = makeFoodBlob();
+            } 
         }
         
         return foodBlob;
+    }
+    
+    public void placeFoodBlobs() {
+        int counter = 11;
+        
+        while (counter != 0) {
+            Point[] foodBlob = makeFoodBlob();
+            for (Point p: foodBlob) {
+                map.getCell(p).setHasFood(5);
+            }
+            counter--;
+        }
     }
     
     /**
