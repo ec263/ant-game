@@ -15,10 +15,10 @@ public class Cell {
     boolean occupied;
     boolean redAnthill;
     boolean blackAnthill;
-    Marker[] redMarkers;
-    Marker[] blackMarkers;
+    boolean[] redMarkers;
+    boolean[] blackMarkers;
 
-    public Cell(int hasFood, boolean rocky, boolean hasAnt, Marker[] redMarkers, Marker[] blackMarkers) {
+    public Cell(int hasFood, boolean rocky, boolean hasAnt, boolean[] redMarkers, boolean[] blackMarkers) {
         this.hasFood = hasFood;
         this.rocky = rocky;
         this.occupied = hasAnt;
@@ -42,20 +42,36 @@ public class Cell {
         this.hasFood = hasFood;
     }
 
-    public Marker[] getRedMarkers() {
+    public boolean[] getRedMarkers() {
         return redMarkers;
     }
 
-    public void setRedMarkers(Marker[] redMarkers) {
+    public void setRedMarkers(boolean[] redMarkers) {
         this.redMarkers = redMarkers;
     }
     
-    public Marker[] getBlackMarkers() {
+    public boolean[] getBlackMarkers() {
         return blackMarkers;
     }
     
-    public void setBlackMarkers(Marker[] blackMarkers) {
+    public void setBlackMarkers(boolean[] blackMarkers) {
         this.blackMarkers = blackMarkers;
+    }
+    
+    public boolean getRedMarker(int i){
+        return redMarkers[i];
+    }
+    
+    public boolean getBlackMarker(int i){
+        return blackMarkers[i];
+    }
+    
+    public void setRedMarker(int i, boolean b){
+        redMarkers[i]=b;
+    }
+    
+    public void setBlackMarker(int i, boolean b){
+        blackMarkers[i]=b;
     }
 
     public boolean isRocky() {
