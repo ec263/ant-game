@@ -1,6 +1,7 @@
 //Misc functions translated from pseudo code on the project web page on study direct, still in progress
 
 
+
 import java.awt.Point;
 
 
@@ -143,6 +144,29 @@ public class GameMisc {
     
     private boolean rocky(Point p){
         return map.getCell(p).isRocky();//Map will have to be a global variable available
+    }
+    
+    private int foodAt(Point p){
+        return map.getCell(p).hasFood();
+    }
+    
+    private void setFoodAt(Point p, int f){
+        map.getCell(p).setHasFood(f);
+    }
+    
+    private boolean anthillAt(Point p, Colour c){
+        if (c==Colour.RED){
+            return map.getCell(p).getRedAnthill();
+        }
+        return map.getCell(p).getBlackAnthill();
+    }
+
+    private void setMarkerAt(Point p, Colour c, int i){
+        if (c==Colour.BLACK){
+            map.getCell(p).setBlackMarker(i, true);
+            return;
+        }
+        map.getCell(p).setRedMarker(i, true);
     }
     
     
