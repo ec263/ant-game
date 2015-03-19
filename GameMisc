@@ -1,0 +1,151 @@
+//Misc functions translated from pseudo code on the project web page on study direct, still in progress
+
+
+import java.awt.Point;
+
+
+/**
+ *
+ * @author Zachary Hoad
+ */
+public class GameMisc {
+    
+
+
+
+    private void step(int id){
+        if (antIsAlive(id)){
+            Point point = findAnt(id);
+            Ant a = antAt(point);
+            if (resting(a)>0){
+                setResting(a, resting(a)-1);
+            } else {
+                Instruction i = getInstruction(colour(a), state(a));
+                if(i instanceof Sense){
+                    Sense s =(Sense)i;
+                    Point pp=sensedCell(point, direction(a), s.sensedir);
+                    if (cellMatches(pp, s.cond, colour(a))){
+                        setState(a, s.st1);
+                    } else {
+                        setState(a, s.st2);
+                    }
+                }
+                if (i instanceof Mark){
+                    Mark m = (Mark)i;
+                    setMarkerAt(point, colour(a), m.i);
+                    setState(a, m.st);
+                }
+                if (i instanceof Unmark){
+                    Unmark u =(Unmark)i;
+                    clearMarkerAt(point, colour(a), u.i);
+                    setState(a, u.st);
+                }
+                if (i instanceof PickUp){
+                    PickUp p = (PickUp)i;
+                    if (hasFood(a)||foodAt(point)==0){
+                        setState(a, p.st2);
+                    } else {
+                        setFoodAt(p, foodAt(point)-1);
+                        setHasFood(a, true);
+                        setState(a, p.st1);
+                    }
+                }
+                if (i instanceof Drop){
+                    Drop d = (Drop)i;
+                    if (hasFood(a)){
+                        setFoodAt(point, foodAt(point)+1);
+                        setHasFood(a, false);
+                    }
+                    setState(a, d.st);
+                }
+                if (i instanceof Turn){
+                    Turn t = (Turn)i;
+                    setDirection(a, turn(t.lr, direction(a)));
+                    setState(a, t.st);
+                }
+                if (i instanceof Move){
+                    Move m = (Move)i;
+                    Point newp = adjacentCell(point, direction(a));
+                    if (rocky(newp)||someAntIsAt(newp)){
+                        setState(a, m.st2);
+                    } else {
+                        clearAntAt(point);
+                        setAntAt(newp, a);
+                        setState(a, m.st1);
+                        setResting(a, 14);
+                        checkForSurroundedAnts(newp);
+                    }
+                }
+                if (i instanceof Flip){
+                    Flip f =(Flip)i;
+                    if (randomint(f.n)==0){
+                        setState(a, f.st1);
+                    } else {
+                        setState(a, f.st2);
+                    }
+                }
+            }
+        }
+    }
+    
+    private int turn(leftOrRight lr, int dir){
+        if (lr==leftOrRight.LEFT){
+            return (dir+5)%6;
+        }
+        if (lr==leftOrRight.RIGHT){
+            return(dir+1)%6;
+        }
+        return -1; //Shouldn't happen
+    }
+    
+    private Point sensedCell(Point p, int d, Direction sd){
+        if (sd==Direction.HERE){
+            return p;
+        }
+        if (sd==Direction.AHEAD){
+            return adjacentCell(p, d);
+        }
+        if (sd==Direction.LEFTAHEAD){
+            return adjacentCell(p, turn(leftOrRight.LEFT, d));
+        }
+        if (sd==Direction.RIGHTAHEAD){
+            return adjacentCell(p, turn(leftOrRight.RIGHT, d));
+        }
+        return null;
+    }
+    
+    private Point adjacentCell(Point p, int d){
+        switch (d){
+          case 0: return new Point(p.x+1, p.y);
+          case 1: if (even(p.y)){ return new Point(p.x, p.y+1);} else {return new Point(p.x+1, p.y+1);}
+          case 2: if (even(p.y)) {return new Point(p.x-1, p.y+1); } else { return new Point(p.x, p.y+1);}
+          case 3: return new Point(p.x-1, p.y);
+          case 4: if (even(p.y)) { return new Point(p.x-1, p.y-1); } else { return new Point(p.x, p.y-1); }
+          case 5: if (even(p.y)) { return new Point(p.x, p.y-1); } else { return new Point(p.x+1, p.y-1); }
+        }
+        return null;
+    }
+    
+    private boolean even(int i){
+        return i%2==0;
+    }
+    
+    enum Colour{
+        RED, BLACK
+    }
+    
+    private Colour otherColour(Colour c){
+        if (c==Colour.BLACK){
+            return Colour.RED;
+        }
+        return Colour.BLACK;
+    }
+    
+    private boolean rocky(Point p){
+        return map.getCell(p).isRocky();//Map will have to be a global variable available
+    }
+    
+    
+    
+    
+}
