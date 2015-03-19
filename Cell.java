@@ -74,6 +74,14 @@ public class Cell {
         this.blackAnthill = blackAnthill;
     }
     
+    public boolean getRedAnthill(){
+        return redAnthill;
+    }
+    
+    public boolean getBlackAnthill(){
+        return blackAnthill;
+    }
+    
     public String toString() {
         String s = "";
         if (redAnthill) {
