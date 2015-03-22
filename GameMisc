@@ -1,6 +1,3 @@
-//Misc functions translated from pseudo code on the project web page on study direct, still in progress
-
-
 
 import java.awt.Point;
 
@@ -155,19 +152,75 @@ public class GameMisc {
     }
     
     private boolean anthillAt(Point p, Colour c){
-        if (c==Colour.RED){
-            return map.getCell(p).getRedAnthill();
-        }
-        return map.getCell(p).getBlackAnthill();
+        return map.getCell(p).getAnthill(c);
     }
 
     private void setMarkerAt(Point p, Colour c, int i){
-        if (c==Colour.BLACK){
-            map.getCell(p).setBlackMarker(i, true);
-            return;
-        }
-        map.getCell(p).setRedMarker(i, true);
+        map.getCell(p).setMarker(i, true, c);
     }
+    
+    private void clearMarkerAt (Point p, Colour c, int i){
+        map.getCell(p).setMarker(i, false, c);
+    }
+    
+    private boolean checkMarkerAt(Point p, Colour c, int i){
+        return map.getCell(p).getMarker(i, c);
+    }
+    
+    private boolean checkAnyMarker(Point p, Colour c){
+        boolean[] markers=map.getCell(p).getMarkers(c);
+        for (int i=0; i<markers.length; i++){
+            if (markers[i]){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
+    private boolean cellMatches(Point p, Condition cond, Colour c){
+        if(cond==Condition.ROCK){
+            return rocky(p);
+        }
+        if(cond==Condition.FRIEND){
+            //Need ants implemented first
+            //some_ant_is_at(p) &&
+            //color(ant_at(p)) = c
+        }
+        if(cond==Condition.FOE){
+            //Need ants implemented first
+            //some_ant_is_at(p) &&
+            //color(ant_at(p)) <> c
+        }
+        if(cond==Condition.FRIENDWITHFOOD){
+            //Need ants implemented first
+            //some_ant_is_at(p) &&
+            //color(ant_at(p)) = c &&
+            //has_food(ant_at(p))
+        }
+        if(cond==Condition.FOEWITHFOOD){
+            //Need ants implemented first
+            //some_ant_is_at(p) &&
+            //color(ant_at(p)) <> c &&
+            //has_food(ant_at(p))
+        }
+        if(cond==Condition.FOOD){
+            return foodAt(p)>0;
+        }
+        if(cond==Condition.MARKER){
+            return checkMarkerAt(p, c, cond.markerNum);
+        }
+        if(cond==Condition.FOEMARKER){
+            return checkAnyMarker(p, otherColour(c));
+        }
+        if(cond==Condition.HOME){
+            return anthillAt(p, c);
+        }
+        if(cond==Condition.FOEHOME){
+            return anthillAt(p, otherColour(c));
+        }
+    }
+    
     
     
     
