@@ -128,6 +128,13 @@ public class Cell {
         return blackAnthill;
     }
     
+    public boolean getAnthill(Colour c){
+        if (c==Colour.RED){
+            return redAnthill;
+        }
+        return blackAnthill;
+    }
+    
     public String toString() {
         String s = "";
         if (redAnthill) {
