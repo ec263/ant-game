@@ -73,6 +73,36 @@ public class Cell {
     public void setBlackMarker(int i, boolean b){
         blackMarkers[i]=b;
     }
+    
+    public boolean[] getMarkers(Colour c) {
+        if (c==Colour.RED){
+            return redMarkers;
+        }
+        return blackMarkers;
+    }
+
+    public void setMarkers(boolean[] markers, Colour c) {
+        if (c==Colour.RED){
+            redMarkers=markers;
+            return;
+        }
+        blackMarkers=markers;
+    }
+    
+    public boolean getMarker(int i, Colour c){
+        if (c==Colour.RED){
+            return redMarkers[i];
+        }
+        return blackMarkers[i];
+    }
+    
+    public void setMarker(int i, boolean b, Colour c){
+        if (c==Colour.RED){
+            redMarkers[i]=b;
+            return;
+        }
+        blackMarkers[i]=b;
+    }
 
     public boolean isRocky() {
         return rocky;
