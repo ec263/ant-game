@@ -1,5 +1,11 @@
+//Map will have to be a global variable available
+//I've done all I can until the Ant class is done, ctrl-f "to do" to find stuff that needs the Ant class is implemented
+//Something to think about, where are the positions of ants sotred? In the ant object or in the cell? If the former we will need an ArrayList of ants available
+
 
 import java.awt.Point;
+import java.math.BigInteger;
+import java.util.ArrayList;
 
 
 /**
@@ -8,7 +14,6 @@ import java.awt.Point;
  */
 public class GameMisc {
     
-
 
 
     private void step(int id){
@@ -43,7 +48,7 @@ public class GameMisc {
                     if (hasFood(a)||foodAt(point)==0){
                         setState(a, p.st2);
                     } else {
-                        setFoodAt(p, foodAt(point)-1);
+                        setFoodAt(point, foodAt(point)-1);
                         setHasFood(a, true);
                         setState(a, p.st1);
                     }
@@ -140,7 +145,7 @@ public class GameMisc {
     }
     
     private boolean rocky(Point p){
-        return map.getCell(p).isRocky();//Map will have to be a global variable available
+        return map.getCell(p).isRocky();
     }
     
     private int foodAt(Point p){
@@ -183,23 +188,23 @@ public class GameMisc {
             return rocky(p);
         }
         if(cond==Condition.FRIEND){
-            //Need ants implemented first
+            //Need ants implemented to do
             //some_ant_is_at(p) &&
             //color(ant_at(p)) = c
         }
         if(cond==Condition.FOE){
-            //Need ants implemented first
+            //Need ants implemented to do
             //some_ant_is_at(p) &&
             //color(ant_at(p)) <> c
         }
         if(cond==Condition.FRIENDWITHFOOD){
-            //Need ants implemented first
+            //Need ants implemented to do
             //some_ant_is_at(p) &&
             //color(ant_at(p)) = c &&
             //has_food(ant_at(p))
         }
         if(cond==Condition.FOEWITHFOOD){
-            //Need ants implemented first
+            //Need ants implemented to do
             //some_ant_is_at(p) &&
             //color(ant_at(p)) <> c &&
             //has_food(ant_at(p))
@@ -219,6 +224,134 @@ public class GameMisc {
         if(cond==Condition.FOEHOME){
             return anthillAt(p, otherColour(c));
         }
+        return false;
+    }
+    
+    private Instruction getInstruction(Colour c, int s){
+        //Need ants to do this
+    }
+    
+    private Colour colour(Ant a){
+        //Need ants to do this
+    }
+    
+    private int adjacentAnts (Point p, Colour c){
+        int n=0;
+        for (int d=0; d<=5; d++){
+            Cell cell=adjacentCell(p, d);
+            if (someAntIsAt(cell)&&colour(antAt(cell))==c){
+                n++;
+            }
+        }
+        return n;
+    }
+    
+    private void checkForSurroundedAntAt(Point p){
+        if (someAntIsAt(p)){
+            Ant a = antAt(p);
+            if (adjacentAnts(p, otherColour(colour(a))>=5)){
+                if (hasFood(a)){
+                    setFoodAt(p, (foodAt(p)+1));
+                }
+                killAntAt(p);
+                setFoodAt(p, (foodAt(p)+3));
+            }
+        }
+    }
+    
+    private void checkForSurroundedAnts(Point p){
+        checkForSurroundedAntAt(p);
+        for (int d=0; d<=5; d++){
+            checkForSurroundedAntAt(adjacentCell(p, d));
+        }
+    }
+    
+    private ArrayList<BigInteger> randomintS=new ArrayList();
+    
+    //Probably initialise with current system time
+    private void initialiseRandomint(BigInteger seed){
+        for (int i=0; i<4; i++){
+            randomintS.add(BigInteger.ZERO);
+        }
+        randomintS.set(3, seed);
+        for (int i=2; i>=0; i--){
+            BigInteger news=randomintS.get(i+1);
+            news=news.multiply(new BigInteger("22695477"));
+            news=news.add(BigInteger.ONE);
+            randomintS.set(i, news);
+        }
+    }
+    
+    private int randomint(int n){
+        randomintS.remove(3);
+        BigInteger news=randomintS.get(0);
+        news=news.multiply(new BigInteger("22695477"));
+        news=news.add(BigInteger.ONE);
+        randomintS.add(0, news);
+        news=news.divide(new BigInteger("65536"));
+        news=news.mod(new BigInteger("16384"));
+        news=news.mod(new BigInteger(""+n));
+        return news.intValue();
+    }
+    
+    private int state(Ant a){
+        //Need ants to do
+    }
+    
+    private int resting(Ant a){
+        //Need ants to do
+    }
+    
+    private int direction(Ant a){
+        //Need ants to do
+    }
+    
+    private boolean hasFood(Ant a){
+        //Need ants to do
+    }
+    
+    private void setState(Ant a, int s){
+        //Need ants to do
+    }
+    
+    private void setResting(Ant a, int s){
+        //Need ants to do
+    }
+    
+    private void setDirection(Ant a, int d){
+        //Need ants to do
+    }
+    
+    private void setHasFood(Ant a, boolean b){
+        //Need ants to do
+    }
+    
+    private boolean someAntIsAt(Point p){
+        //Need ants to do
+    }
+    
+    private Ant antAt(Point p){
+        //Need ants to do
+    }
+    
+    private void setAntAt(Point p, Ant a){
+        //Need ants to do
+    }
+    
+    private void clearAntAt(Point p){
+        //Need ants to do
+    }
+    
+    private boolean antIsAlive(int id){
+        //Need ants to do
+    }
+    
+    private Point findAnt(int id){
+        //Need ants to do
+    }
+    
+    private void killAntAt(Point p){
+        //Need ants to do
     }
     
     
