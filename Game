@@ -19,6 +19,7 @@ public class Game {
     private ArrayList<Instruction> blackBrain;
     private Statistics statistics;
     
+    
     public Game(Map map, ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
         this.map=map;
         cleanMap=map;
@@ -371,6 +372,9 @@ public class Game {
     }
     
     private int randomint(int n){
+        if (n<1){
+            return 0;
+        }
         randomintS.remove(3);
         BigInteger news=randomintS.get(0);
         news=news.multiply(new BigInteger("22695477"));
