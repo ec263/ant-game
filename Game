@@ -10,8 +10,28 @@ import java.util.ArrayList;
  */
 public class Game {
     
+    private Map map;
+    private ArrayList<Ant> ants;
+    private ArrayList<Instruction> redBrain;
+    private ArrayList<Instruction> blackBrain;
+    private Statistics statistics;
     
+    public Game(Map map, ArrayList<Ant> ants, ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
+        this.map=map;
+        this.ants=ants;
+        this.redBrain=redBrain;
+        this.blackBrain=blackBrain;
+        statistics=new Statistics();
+        initialiseRandomint(new BigInteger(""+System.currentTimeMillis()));
+    }
     
+    public Game swapSides(){
+        
+    }
+    
+    public Statistics getStatistics(){
+        
+    }
 
 
     private void step(int id){
