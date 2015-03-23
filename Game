@@ -35,10 +35,9 @@ public class Game {
         for (int h=0; h<map.height; h++){
             for (int w=0; w<map.width; w++){
                 Point pos=new Point(h, w);
-                Ant a;
                 if (anthillAt(pos, Colour.RED)){
                     try {
-                        a = new Ant(Colour.RED, 0, 0, 0, false, pos);
+                        Ant a = new Ant(Colour.RED, 0, 0, 0, false, pos);
                         ants.add(a);
                     } catch (Exception ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);//Should never happen
@@ -46,7 +45,7 @@ public class Game {
                 }
                 if (anthillAt(pos, Colour.BLACK)){
                     try {
-                        a=new Ant(Colour.BLACK, 0, 0, 0, false, pos);
+                        Ant a=new Ant(Colour.BLACK, 0, 0, 0, false, pos);
                         ants.add(a);
                     } catch (Exception ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
