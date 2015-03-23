@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class Game {
     
+    
+    
 
 
     private void step(int id){
@@ -129,7 +131,7 @@ public class Game {
         return i%2==0;
     }
     
-    enum Colour{
+    public enum Colour{
         RED, BLACK
     }
     
@@ -234,7 +236,7 @@ public class Game {
     private int adjacentAnts (Point p, Colour c){
         int n=0;
         for (int d=0; d<=5; d++){
-            Cell cell=adjacentCell(p, d);
+            Point cell=adjacentCell(p, d);
             if (someAntIsAt(cell)&&colour(antAt(cell))==c){
                 n++;
             }
