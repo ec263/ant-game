@@ -33,6 +33,15 @@ public class Game {
         
     }
     
+    public Game(ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
+        this.redBrain=redBrain;
+        this.blackBrain=blackBrain;
+    }
+    
+    public Game newMap(Map map){
+        return new Game(map, redBrain, blackBrain);
+    }
+    
     public Game swapSides(){
         return new Game(cleanMap, blackBrain, redBrain);
     }
