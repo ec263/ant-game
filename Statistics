@@ -14,4 +14,16 @@ public class Statistics {
     public int mapFood;
     public int redCarryFood;
     public int blackCarryFood;
+    
+    public Statistics(){
+        redAnts=0;
+        blackAnts=0;
+        redKills=0;
+        blackKills=0;
+        redHillFood=0;
+        blackHillFood=0;
+        mapFood=0;
+        redCarryFood=0;
+        blackCarryFood=0;
+    }
 }
