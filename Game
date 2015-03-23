@@ -35,18 +35,18 @@ public class Game {
         for (int h=0; h<map.height; h++){
             for (int w=0; w<map.width; w++){
                 Point pos=new Point(h, w);
-                if (map.getCell(pos).getRedAnthill()){
-                    Ant a;
+                Ant a;
+                if (anthillAt(pos, Colour.RED)){
                     try {
                         a = new Ant(Colour.RED, 0, 0, 0, false, pos);
                         ants.add(a);
                     } catch (Exception ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);//Should never happen
-                    }
+                    }//Should never happen
                 }
-                if (map.getCell(pos).getBlackAnthill()){
+                if (anthillAt(pos, Colour.BLACK)){
                     try {
-                        Ant a=new Ant(Colour.BLACK, 0, 0, 0, false, pos);
+                        a=new Ant(Colour.BLACK, 0, 0, 0, false, pos);
                         ants.add(a);
                     } catch (Exception ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,7 +95,7 @@ public class Game {
     private void step(int id){
         if (antIsAlive(id)){
             Point point = findAnt(id);
-            Ant a = antAt(point);
+            Ant a = ants.get(id);
             if (resting(a)>0){
                 setResting(a, resting(a)-1);
             } else {
@@ -466,7 +466,7 @@ public class Game {
     }
     
     private boolean antIsAlive(int id){
-        return(ants.get(id).getPosition()!=new Point(-1, -1));
+        return(!(ants.get(id).getPosition().equals(new Point(-1, -1))));
     }
     
     private Point findAnt(int id){
