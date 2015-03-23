@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package ant;
 
 /**
  *
@@ -14,19 +13,15 @@ public class Ant {
     int state;
     int resting;
     int direction;
-    String color;
+    Game.Colour color;
     boolean has_food;
     
-    public Ant (int id, String color, int state, int resting, int direction, boolean has_food) throws Exception {
-        color = color.toLowerCase();
+    public Ant (int id, Game.Colour color, int state, int resting, int direction, boolean has_food) throws Exception {
         if (state < 0 || state > 9999){
             throw new Exception("Construction failed. State must be in the range 0-9999: " + state);
         }
         if (direction < 0 || direction > 5){
             throw new Exception("Construction failed. Direction must be in the range 0-5: " + direction);
-        }
-        if (!(color.equals("red") || color.equals("black"))) {
-            throw new Exception("Construction failed. Color must be red or black: " + color);
         }
         this.id = id;
         this.state = state;
@@ -38,15 +33,11 @@ public class Ant {
         //System.out.println("Made ant: " + this.getColor());
     }
 
-    public String getColor() {
+    public Game.Colour getColor() {
         return color;
     }
 
-    public void setColor(String color) throws Exception {
-        color = color.toLowerCase();
-        if(!(color.equals("red") || color.equals("black"))){
-            throw new Exception ("Set color failed. Color must be red or black: " + color);
-        }
+    public void setColor(Game.Colour color) throws Exception {
         this.color = color;
     }
 
