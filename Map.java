@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package antmapgenerator;
 
 import java.awt.Point;
 
@@ -37,8 +36,8 @@ public class Map {
      * all empty except rocky Cells around the perimeter
      */
     public void newMap () {
-        Marker[] redMarkers = new Marker[100];
-        Marker[] blackMarkers = new Marker[100];
+        boolean[] redMarkers = new boolean[6];
+        boolean[] blackMarkers = new boolean[6];
         for (int i = 0; i < height; i++){
             for (int j = 0; j < width; j++) {
                 if (i == 0 || j == 0 || i == height-1 || j == width-1) {
