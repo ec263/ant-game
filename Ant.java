@@ -9,21 +9,19 @@
  */
 public class Ant {
     
-    int id;
     int state;
     int resting;
     int direction;
     Game.Colour color;
     boolean has_food;
     
-    public Ant (int id, Game.Colour color, int state, int resting, int direction, boolean has_food) throws Exception {
+    public Ant (Game.Colour color, int state, int resting, int direction, boolean has_food) throws Exception {
         if (state < 0 || state > 9999){
             throw new Exception("Construction failed. State must be in the range 0-9999: " + state);
         }
         if (direction < 0 || direction > 5){
             throw new Exception("Construction failed. Direction must be in the range 0-5: " + direction);
         }
-        this.id = id;
         this.state = state;
         this.resting = resting;
         this.direction = direction;
@@ -58,14 +56,6 @@ public class Ant {
 
     public void setHas_food(boolean has_food) {
         this.has_food = has_food;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getResting() {
