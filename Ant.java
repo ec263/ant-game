@@ -1,3 +1,6 @@
+
+import java.awt.Point;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -14,8 +17,9 @@ public class Ant {
     int direction;
     Game.Colour color;
     boolean has_food;
+    Point position;
     
-    public Ant (Game.Colour color, int state, int resting, int direction, boolean has_food) throws Exception {
+    public Ant (Game.Colour color, int state, int resting, int direction, boolean has_food, Point position) throws Exception {
         if (state < 0 || state > 9999){
             throw new Exception("Construction failed. State must be in the range 0-9999: " + state);
         }
@@ -27,6 +31,7 @@ public class Ant {
         this.direction = direction;
         this.color = color;
         this.has_food = has_food;
+        this.position=position;
         
         //System.out.println("Made ant: " + this.getColor());
     }
@@ -75,6 +80,14 @@ public class Ant {
             throw new Exception("State must be in the range 0-9999: " + state);
         }
         this.state = state;
+    }
+    
+    public Point getPosition(){
+        return position;
+    }
+    
+    public void setPosition(Point position){
+        this.position=position;
     }
     
 }
