@@ -34,7 +34,7 @@ public class Game {
     }
     
     public Game swapSides(){
-        return new Game(cleanMap, redBrain, blackBrain);
+        return new Game(cleanMap, blackBrain, redBrain);
     }
     
     public Statistics getStatistics(){
