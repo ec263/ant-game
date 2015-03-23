@@ -2,6 +2,8 @@
 import java.awt.Point;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -29,7 +31,33 @@ public class Game {
         statistics.blackAnts=163; //And this many ants
         statistics.redAnts=163;
         
-        ants=new ArrayList();//to do
+        ants=new ArrayList();
+        for (int h=0; h<map.height; h++){
+            for (int w=0; w<map.width; w++){
+                Point pos=new Point(h, w);
+                if (map.getCell(pos).getRedAnthill()){
+                    Ant a;
+                    try {
+                        a = new Ant(Colour.RED, 0, 0, 0, false, pos);
+                        ants.add(a);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);//Should never happen
+                    }
+                }
+                if (map.getCell(pos).getBlackAnthill()){
+                    try {
+                        Ant a=new Ant(Colour.BLACK, 0, 0, 0, false, pos);
+                        ants.add(a);
+                    } catch (Exception ex) {
+                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+                    }//Should never happen
+                }
+            }
+        }
+        if (ants.size()!=326){
+            System.out.println("URGENT PROBLEM! Look in Game constructor");
+        }
+        
         
     }
     
@@ -102,8 +130,9 @@ public class Game {
                         statistics.mapFood--;
                         if (anthillAt(point, Colour.RED)){
                             statistics.redHillFood--;
-                        } else {
-                            statistics.blackCarryFood--;
+                        }
+                        if (anthillAt(point, Colour.BLACK)){
+                            statistics.blackHillFood--;
                         }
                     }
                 }
@@ -112,12 +141,12 @@ public class Game {
                     if (hasFood(a)){
                         setFoodAt(point, foodAt(point)+1);
                         setHasFood(a, false);
-                        if (colour(a)==Colour.RED){
                         statistics.mapFood++;
                         if (anthillAt(point, Colour.RED)){
                             statistics.redHillFood++;
-                        } else {
-                            statistics.blackCarryFood++;
+                        }
+                        if (anthillAt(point, Colour.BLACK)){
+                            statistics.blackHillFood++;
                         }
                     }
                     setState(a, d.st);
@@ -249,26 +278,16 @@ public class Game {
             return rocky(p);
         }
         if(cond==Condition.FRIEND){
-            //Need ants implemented to do
-            //some_ant_is_at(p) &&
-            //color(ant_at(p)) = c
+            return ((someAntIsAt(p))&&(colour(antAt(p))==c));
         }
         if(cond==Condition.FOE){
-            //Need ants implemented to do
-            //some_ant_is_at(p) &&
-            //color(ant_at(p)) <> c
+            return ((someAntIsAt(p))&&(colour(antAt(p))!=c));
         }
         if(cond==Condition.FRIENDWITHFOOD){
-            //Need ants implemented to do
-            //some_ant_is_at(p) &&
-            //color(ant_at(p)) = c &&
-            //has_food(ant_at(p))
+            return ((someAntIsAt(p))&&(colour(antAt(p))==c)&&(hasFood(antAt(p))));
         }
         if(cond==Condition.FOEWITHFOOD){
-            //Need ants implemented to do
-            //some_ant_is_at(p) &&
-            //color(ant_at(p)) <> c &&
-            //has_food(ant_at(p))
+            return ((someAntIsAt(p))&&(colour(antAt(p))!=c)&&(hasFood(antAt(p))));
         }
         if(cond==Condition.FOOD){
             return foodAt(p)>0;
@@ -296,7 +315,7 @@ public class Game {
     }
     
     private Colour colour(Ant a){
-        //Need ants to do this
+        return a.getColor();
     }
     
     private int adjacentAnts (Point p, Colour c){
@@ -313,7 +332,7 @@ public class Game {
     private void checkForSurroundedAntAt(Point p){
         if (someAntIsAt(p)){
             Ant a = antAt(p);
-            if (adjacentAnts(p, otherColour(colour(a))>=5)){
+            if (adjacentAnts(p, otherColour(colour(a)))>=5){
                 if (hasFood(a)){
                     setFoodAt(p, (foodAt(p)+1));
                 }
@@ -336,10 +355,10 @@ public class Game {
         }
     }
     
-    private ArrayList<BigInteger> randomintS=new ArrayList();
+    private ArrayList<BigInteger> randomintS;
     
-    //Probably initialise with current system time
     private void initialiseRandomint(BigInteger seed){
+        randomintS=new ArrayList();
         for (int i=0; i<4; i++){
             randomintS.add(BigInteger.ZERO);
         }
@@ -365,36 +384,44 @@ public class Game {
     }
     
     private int state(Ant a){
-        //Need ants to do
+        return a.getState();
     }
     
     private int resting(Ant a){
-        //Need ants to do
+        return a.getResting();
     }
     
     private int direction(Ant a){
-        //Need ants to do
+        return a.getDirection();
     }
     
     private boolean hasFood(Ant a){
-        //Need ants to do
+        return a.has_food();
     }
     
     private void setState(Ant a, int s){
-        //Need ants to do
+        try {
+            a.setState(s);
+        } catch (Exception ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }//Should always work
     }
     
     private void setResting(Ant a, int s){
-        //Need ants to do
+        a.setResting(s);
     }
     
     private void setDirection(Ant a, int d){
-        //Need ants to do
+        try {
+            a.setDirection(d);
+        } catch (Exception ex) {
+            Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
+        }//Should always work
     }
     
     private void setHasFood(Ant a, boolean b){
-        //Need ants to do
-        if (a.colour==Colour.BLACK){
+        a.setHas_food(b);
+        if (a.getColor()==Colour.BLACK){
             if (b){
                 statistics.blackCarryFood++;
             } else {
@@ -410,31 +437,50 @@ public class Game {
     }
     
     private boolean someAntIsAt(Point p){
-        //Need ants to do
+        if (p.x<0||p.x>=map.height||p.y<0||p.y>=map.width){
+            return false;
+        }
+        for (Ant a:ants){
+            if (a.getPosition()==p){
+                return true;
+            }
+        }
+        return false;
     }
     
     private Ant antAt(Point p){
-        //Need ants to do
+        for (Ant a:ants){
+            if (a.getPosition()==p){
+                return a;
+            }
+        }
+        return null;
     }
     
     private void setAntAt(Point p, Ant a){
-        //Need ants to do
+        a.setPosition(p);
     }
     
     private void clearAntAt(Point p){
-        //Need ants to do
+        antAt(p).setPosition(null);
     }
     
     private boolean antIsAlive(int id){
-        //Need ants to do
+        return(ants.get(id).getPosition()!=new Point(-1, -1));
     }
     
     private Point findAnt(int id){
-        //Need ants to do
+        return ants.get(id).getPosition();
     }
     
     private void killAntAt(Point p){
-        //Need ants to do
+        Ant a=antAt(p);
+        if(a.has_food()){
+            setHasFood(a, false);
+            setFoodAt(p, foodAt(p)+1);
+            statistics.mapFood++;
+        }
+        a.setPosition(new Point(-1, -1));
         if(colour(antAt(p))==Colour.BLACK){
             statistics.blackAnts--;
         } else {
