@@ -1,0 +1,17 @@
+
+/**
+ *
+ * @author Zachary Hoad
+ */
+public class Statistics {
+    
+    public int redAnts;
+    public int blackAnts;
+    public int redKills;
+    public int blackKills;
+    public int redHillFood;
+    public int blackHillFood;
+    public int mapFood;
+    public int redCarryFood;
+    public int blackCarryFood;
+}
