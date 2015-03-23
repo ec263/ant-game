@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package antmapgenerator;
 
 /**
  *
@@ -74,30 +73,30 @@ public class Cell {
         blackMarkers[i]=b;
     }
     
-    public boolean[] getMarkers(Colour c) {
-        if (c==Colour.RED){
+    public boolean[] getMarkers(Game.Colour c) {
+        if (c==Game.Colour.RED){
             return redMarkers;
         }
         return blackMarkers;
     }
 
-    public void setMarkers(boolean[] markers, Colour c) {
-        if (c==Colour.RED){
+    public void setMarkers(boolean[] markers, Game.Colour c) {
+        if (c==Game.Colour.RED){
             redMarkers=markers;
             return;
         }
         blackMarkers=markers;
     }
     
-    public boolean getMarker(int i, Colour c){
-        if (c==Colour.RED){
+    public boolean getMarker(int i, Game.Colour c){
+        if (c==Game.Colour.RED){
             return redMarkers[i];
         }
         return blackMarkers[i];
     }
     
-    public void setMarker(int i, boolean b, Colour c){
-        if (c==Colour.RED){
+    public void setMarker(int i, boolean b, Game.Colour c){
+        if (c==Game.Colour.RED){
             redMarkers[i]=b;
             return;
         }
@@ -128,8 +127,8 @@ public class Cell {
         return blackAnthill;
     }
     
-    public boolean getAnthill(Colour c){
-        if (c==Colour.RED){
+    public boolean getAnthill(Game.Colour c){
+        if (c==Game.Colour.RED){
             return redAnthill;
         }
         return blackAnthill;
