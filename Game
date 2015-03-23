@@ -87,7 +87,7 @@ public class Game {
     }
     
     public void nextTurn(){
-        for (int i=0; i<163; i++){
+        for (int i=0; i<326; i++){
             step(i);
         }
     }
@@ -486,7 +486,6 @@ public class Game {
         } else {
             statistics.redAnts--;
         }
-        //Don't forget, if the ant is carrying food increment map food (and maybe anthill food) and decrement carry food
     }
     
     
