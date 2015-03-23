@@ -1,7 +1,3 @@
-//Map will have to be a global variable available
-//I've done all I can until the Ant class is done, ctrl-f "to do" to find stuff that needs the Ant class is implemented
-//Something to think about, where are the positions of ants sotred? In the ant object or in the cell? If the former we will need an ArrayList of ants available
-
 
 import java.awt.Point;
 import java.math.BigInteger;
@@ -12,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author Zachary Hoad
  */
-public class GameMisc {
+public class Game {
     
 
 
