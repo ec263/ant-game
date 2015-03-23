@@ -11,14 +11,15 @@ import java.util.ArrayList;
 public class Game {
     
     private Map map;
+    private Map cleanMap;
     private ArrayList<Ant> ants;
     private ArrayList<Instruction> redBrain;
     private ArrayList<Instruction> blackBrain;
     private Statistics statistics;
     
-    public Game(Map map, ArrayList<Ant> ants, ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
+    public Game(Map map, ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
         this.map=map;
-        this.ants=ants;
+        cleanMap=map;
         this.redBrain=redBrain;
         this.blackBrain=blackBrain;
         statistics=new Statistics();
@@ -30,9 +31,20 @@ public class Game {
     }
     
     public Statistics getStatistics(){
+        return statistics;
+    }
+    
+    public Map getMap(){
+        return map;
+    }
+    
+    public ArrayList<Ant> getAnts(){
+        return ants;
+    }
+    
+    public void nextTurn(){
         
     }
-
 
     private void step(int id){
         if (antIsAlive(id)){
