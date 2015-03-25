@@ -17,7 +17,7 @@ import javax.swing.*;
  *
  * @author ec263
  */
-public class DrawAntWorldPanel extends JPanel {
+public class AntWorldPanel extends JPanel {
     
     //FontMetrics metrics;
     static Map map;
@@ -116,7 +116,7 @@ public class DrawAntWorldPanel extends JPanel {
 
         JFrame frame = new JFrame();
         JScrollPane scroll = new JScrollPane();
-        JPanel drawPanel = new DrawAntWorldPanel();
+        JPanel drawPanel = new AntWorldPanel();
         
         drawPanel.setPreferredSize(new Dimension(1965, 1965));
         drawPanel.setBorder(BorderFactory.createLineBorder(Color.red));
