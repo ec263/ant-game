@@ -492,8 +492,10 @@ public class Game {
         a.setPosition(new Point(-1, -1));
         if(colour(antAt(p))==Colour.BLACK){
             statistics.blackAnts--;
+            statistics.redKills++;
         } else {
             statistics.redAnts--;
+            statistics.blackKills++;
         }
     }
     
