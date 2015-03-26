@@ -15,12 +15,12 @@ public class Game {
     private Map map;
     private Map cleanMap;
     private ArrayList<Ant> ants;
-    private ArrayList<Instruction> redBrain;
-    private ArrayList<Instruction> blackBrain;
+    private AntBrain redBrain;
+    private AntBrain blackBrain;
     private Statistics statistics;
     
     
-    public Game(Map map, ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
+    public Game(Map map, AntBrain redBrain, AntBrain blackBrain){
         this.map=map;
         cleanMap=map;
         this.redBrain=redBrain;
@@ -31,6 +31,8 @@ public class Game {
         statistics.mapFood=1375; //Tournament legal worlds must have this much food
         statistics.blackAnts=127; //And this many ants
         statistics.redAnts=127;
+        statistics.redName=redBrain.name;
+        statistics.blackName=blackBrain.name;
         
         ants=new ArrayList();
         
@@ -67,7 +69,7 @@ public class Game {
         
     }
     
-    public Game(ArrayList<Instruction> redBrain, ArrayList<Instruction> blackBrain){
+    public Game(AntBrain redBrain, AntBrain blackBrain){
         this.redBrain=redBrain;
         this.blackBrain=blackBrain;
     }
@@ -315,9 +317,9 @@ public class Game {
     
     private Instruction getInstruction(Colour c, int s){
         if (c==Colour.RED){
-            return redBrain.get(s);
+            return redBrain.instructions.get(s);
         }
-        return blackBrain.get(s);
+        return blackBrain.instructions.get(s);
     }
     
     private Colour colour(Ant a){
