@@ -1,4 +1,4 @@
-package antgameassignment;
+
 
 import java.util.ArrayList;
 
@@ -25,6 +25,7 @@ public class Tournament {
         antBrains = new ArrayList();
         stats = new ArrayList();
         gamesPlayed = 0;
+        //Create the GUIs here
     }
 
     /**
@@ -53,6 +54,7 @@ public class Tournament {
      * Create a game for every match up created this way.
      */
     public void createMatchups() {
+        //If not enough maps generate more
         for (ArrayList<Instruction> i : antBrains) {
             for (ArrayList<Instruction> j : antBrains) {
                 if (!(i.equals(j))) {
@@ -64,6 +66,10 @@ public class Tournament {
             }
         }
     }
+    
+    /*
+    create1v1()
+    */
 
     /**
      * Play each game and then display the statistics for that game
@@ -75,6 +81,16 @@ public class Tournament {
             gamesPlayed++;
         }
     }
+    
+    
+    /*
+    playNextGame
+        for 1 to 30k
+            game.nextStep()
+            gui.updateGui(game.getMap(), game.getAnts());
+    
+    
+    */
 
     /**
      * Display the statistics for the game
