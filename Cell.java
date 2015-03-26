@@ -139,9 +139,6 @@ public class Cell {
         else if (rocky) {
             s = "#";
         }
-        else if (occupied) {
-            s = "A";
-        }
         else {
             s = ".";
         }
