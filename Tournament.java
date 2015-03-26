@@ -1,6 +1,7 @@
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -12,7 +13,7 @@ public class Tournament {
 
     private ArrayList<Game> roster;
     private ArrayList<Map> worlds;
-    private ArrayList<ArrayList<Instruction>> antBrains;
+    private ArrayList<AntBrain> antBrains;
     public int gamesPlayed;
     ArrayList<Statistics> stats;
 
@@ -43,8 +44,8 @@ public class Tournament {
      * @param brain 
      *  loads antBrains into the tournament
      */
-    public void loadBrains(ArrayList<ArrayList<Instruction>> brain) {
-        for (ArrayList<Instruction> i : brain) {
+    public void loadBrains(ArrayList<AntBrain> brain) {
+        for (AntBrain i : brain) {
             antBrains.add(i);
         }
     }
@@ -55,8 +56,8 @@ public class Tournament {
      */
     public void createMatchups() {
         //If not enough maps generate more
-        for (ArrayList<Instruction> i : antBrains) {
-            for (ArrayList<Instruction> j : antBrains) {
+        for (AntBrain i : antBrains) {
+            for (AntBrain j : antBrains) {
                 if (!(i.equals(j))) {
                     for (Map m : worlds) {
                         Game g = new Game(m, i, j);
@@ -67,9 +68,9 @@ public class Tournament {
         }
     }
     
-    /*
-    create1v1()
-    */
+    public void create1v1Match(){
+        roster.add(new Game(worlds.get(0), antBrains.get(0), antBrains.get(1)));
+    }
 
     /**
      * Play each game and then display the statistics for that game
@@ -84,16 +85,44 @@ public class Tournament {
     
     
     /*
-    playNextGame
+    playNextGame returns Statistics
+        Game g=roster.remove(0);
         for 1 to 30k
             game.nextStep()
             gui.updateGui(game.getMap(), game.getAnts());
-    
-    
+        stats.add(g.getStatistics());
+        return g.getStatistics();    
     */
+    
+    public HashMap<String, Integer> generateScores(){
+        HashMap<String, Integer> scores = new HashMap();
+        for (Statistics s: stats){
+            if (s.redHillFood>s.blackHillFood){
+                addScore(scores, s.redName, 2);
+            }
+            if (s.blackHillFood>s.redHillFood){
+                addScore(scores, s.blackName, 2);
+            }
+            if(s.redHillFood==s.blackHillFood){
+                addScore(scores, s.redName, 1);
+                addScore(scores, s.blackName, 1);
+            }
+        }
+        return scores;
+    }
+    
+    private void addScore(HashMap<String, Integer> scores, String name, int score){
+        if (scores.containsKey(name)){
+            score=score+scores.get(name);
+            scores.put(name, score);
+        } else {
+            scores.put(name, score);
+        }
+        
+    }
 
     /**
-     * Display the statistics for the game
+     * Display the statistics for the game, for debugging
      */
     public void generateStats() {
         System.out.println("games played" + gamesPlayed);
