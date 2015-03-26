@@ -19,7 +19,6 @@ public class Cell {
     public Cell(int hasFood, boolean rocky, boolean[] redMarkers, boolean[] blackMarkers) {
         this.hasFood = hasFood;
         this.rocky = rocky;
-        this.occupied = hasAnt;
         this.redMarkers = redMarkers;
         this.blackMarkers = blackMarkers;
     }
