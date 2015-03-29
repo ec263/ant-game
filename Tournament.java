@@ -83,16 +83,15 @@ public class Tournament {
         }
     }
     
-    
-    /*
-    playNextGame returns Statistics
+    public Statistics playNextGame(){
         Game g=roster.remove(0);
-        for 1 to 30k
-            game.nextStep()
-            gui.updateGui(game.getMap(), game.getAnts());
+        for (int i=0; i<300000; i++){
+            g.nextTurn();
+            //gui.updateGui(g.getMap(), g.getAnts());
+        }
         stats.add(g.getStatistics());
-        return g.getStatistics();    
-    */
+        return g.getStatistics();
+    }
     
     public HashMap<String, Integer> generateScores(){
         HashMap<String, Integer> scores = new HashMap();
