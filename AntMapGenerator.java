@@ -2,238 +2,527 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package antmapgui;
+package antmapgenerator;
 
-import ant.Ant;
-import antmapgenerator.AntMapGenerator;
-import antmapgenerator.Map;
-import game.Game;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.*;
+import java.awt.Point;
+import java.util.Random;
+import ant.*;
 
 /**
  *
  * @author ec263
  */
-public class AntWorldPanel extends JPanel {
+public class AntMapGenerator {
     
-    //FontMetrics metrics;
-    static Map map;
+    int height;
+    int width;
     Ant[] ants;
-    static final int xStart = 10;
-    static final int yStart = 10;
-    static final double spacing = 13;
-    static final int hexRadius = 8;
-    //static final int offset = 7;
+    Map map;
+    Point[] redAnthill;
+    Point[] blackAnthill;
+
+    public AntMapGenerator(int height, int width) {
+        this.height = height;
+        this.width = width;
+        map = new Map(height, width);
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        // TODO code application logic here
+        AntMapGenerator a = new AntMapGenerator(150, 150);
+        
+        
+        a.getCell(0, 5).setRocky(true);
+        
+        Point p = new Point (0,5);
+        if (a.rocky(p)){
+            System.out.println("rocky test passed");
+        }
+        
+        p = new Point (5,1);
+//        a.getCell(5,1).setOccupied(true);
+//        if (a.someAntIsAt(p)) {
+//            System.out.println("some ant is at test passed");
+//        }
+        
+        
+        
+        //a.getCell(0, 5).setHasFood(true);
+        //a.map[0][5].setHasFood(true);
+        //a.map[5][0] = 2;
+        a.placeAnthills();
+        a.placeFoodBlobs();
+        a.placeRocks();
+        //a.placeRocks(a.makeRocks());
+        a.map.printMap();
+        //a.makeRedAnthill();
+        //a.makeAnthill();
+        
+    }
     
+    public void generateMap() {
+        placeAnthills();
+        placeFoodBlobs();
+        placeRocks();
+        //placeRocks(makeRocks());
+        map.printMap();
+    }
     
+    /**
+     * 
+     * @return the map
+     */
+    public Map getMap() {
+        return map;
+    }
     
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void setAnts(Ant[] ants) {
+        this.ants = ants;
+    }
+    
+    public Ant[] getAnts(){
+        return ants;
+    }
+    
+    /**
+     * 
+     * @param x
+     * @param y
+     * @return Cell at (x, y)
+     */
+    public Cell getCell (int x, int y) {
+        return map.cells[y][x];
+    }
+    
+    //under construction
+    public boolean checkPlaceable(Point p) {
+        //boolean ok;
+        int x = p.x;
+        int y = p.y;
+        int offset;
+        Point[] points = new Point[7];
+        
+        //offset -1 if y is even
+        if (y % 2 == 0) {
+            offset = -1;
+        }
+        else
+            offset = 0;
+        
+        points[0] = new Point(x + offset, y-1);
+        points[1] = new Point(x + 1 + offset, y-1);
+        points[2] = new Point(x - 1, y);
+        points[3] = new Point(x, y);
+        points[4] = new Point(x + 1, y);
+        points[5] = new Point(x + offset, y + 1);
+        points[6] = new Point(x + 1 + offset, y + 1);
+        
+        //check the cell and surrounding cells for stuff
+        //return false if stuff is found
+        //return true if cell and surrounding cells are clear
+        //i.e. the element can be placed
+        for (Point pt: points) {
+            if(map.getCell(pt).rocky || map.getCell(pt).blackAnthill || map.getCell(pt).redAnthill) {
+                return false;
+            }
+            if(map.getCell(pt).hasFood != 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * This will probably end up in another class
+     * @param p
+     * @return 
+     */
+    public boolean rocky (Point p) {
+        if (map.cells[p.y][p.x].rocky) {
+            return true;
+        }
+        else
+            return false;
+    }
+    
+    /**
+     * This will probably go in another class
+     * @param p
+     * @return 
+     
+    public boolean someAntIsAt (Point p) {
+        if (map.cells[p.y][p.x].occupied) {
+            return true;
+        }
+        else
+            return false;
+    }
+    * /
+    
+    /**
+     * 
+     * @return an array of Points for an anthill (hexagon of side 7)
+     */
+    public Point[] makeAnthill() {
+        Point[] anthill = new Point[127];
+        
+        int x = randInt(1,148);
+        int y = randInt(1,148);
+        int offset;
+        
+        while (x-6 <= 1 || x+6 >= 148 || y-6 <= 1 || y+6 >= 148) {
+            x = randInt(1,148);
+            y = randInt(1,148);
+        }
+        
+        System.out.println("Centre: (" + x + ", " + y + ")");
+        
+        if (y % 2 == 0) {
+            offset = -1;
+            //anthill = makeEvenYAnthill(new Point (x, y));
+        }
+        else {
+            offset = 0;
+            //anthill = makeOddYAnthill(new Point (x, y));
+        }
+        
+        int counter = 0;
+        
+        for (int i = x-3; i < x+4; i++) {
+            anthill[counter] = new Point(i, y-6);
+            counter++;
+        }
+        for (int i = x-3+offset; i < x+5+offset; i++) {
+            anthill[counter] = new Point(i, y-5);
+            counter++;
+        }
+        for (int i = x-4; i < x+5; i++) {
+            anthill[counter] = new Point (i, y-4);
+            counter++;
+        }
+        for (int i = x-4+offset; i < x+6+offset; i++) {
+            anthill[counter] = new Point (i, y-3);
+            counter++;
+        }
+        for (int i = x-5; i < x+6; i++) {
+            anthill[counter] = new Point (i, y-2);
+            counter++;
+        }
+        for (int i = x-5+offset; i < x+7+offset; i++) {
+            anthill[counter] = new Point (i, y-1);
+            counter++;
+        }
+        for (int i = x-6; i < x+7; i++) {
+            anthill[counter] = new Point (i, y);
+            counter++;
+        }
+        for (int i = x-5+offset; i < x+7+offset; i++) {
+            anthill[counter] = new Point (i, y+1);
+            counter++;
+        }
+        for (int i = x-5; i < x+6; i++) {
+            anthill[counter] = new Point (i, y+2);
+            counter++;
+        }
+        for (int i = x-4+offset; i < x+6+offset; i++) {
+            anthill[counter] = new Point (i, y+3);
+            counter++;
+        }
+        for (int i = x-4; i < x+5; i++) {
+            anthill[counter] = new Point (i, y+4);
+            counter++;
+        }
+        for (int i = x-3+offset; i < x+5+offset; i++) {
+            anthill[counter] = new Point(i, y+5);
+            counter++;
+        }
+        for (int i = x-3; i < x+4; i++) {
+            anthill[counter] = new Point(i, y+6);
+            counter++;
+        }
+        
+        return anthill;
+    }
+    
+    /**
+     * places the anthills on the map
+     */
+    public void placeAnthills() {
+        Point[] redAnthill = makeAnthill();
+        Point[] blackAnthill = makeAnthill();
+        boolean ok = false;        
+        
+        //ant hill
+        Point red = redAnthill[63];
+        Point black = blackAnthill[63];
+        
+        //black x >= red x + 14
+        //black x <= red x -14
+        //black y <= red y - 14
+        //black y >= red y + 14
         
         /*
-        ants = new Ant[2];
-        try {
-            ants[0] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(5, 5));
-            ants[1] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(3, 5));
-        } catch (Exception ex) {
-            Logger.getLogger(AntWorldPanel.class.getName()).log(Level.SEVERE, null, ex);
+        while (!(black.x >= red.x + 13) || !(black.x <= red.x - 13) || !(black.y <= red.y -13) || !(black.y >= red.y+13)) {
+            blackAnthill = makeAnthill();
+            black= blackAnthill[63];
         }
         * 
         */
         
-        Font f = new Font("Dialog", Font.BOLD, 12);
-        
-        g.setFont(f);
-
-        for (int i = 0; i < 150; i++) {
-            int offset;
-            
-            if (i % 2 != 0) {
-                offset = 7;
+        /*
+        for (Point p : redAnthill) {
+            for (Point q : blackAnthill) {
+                if (p.x == q.x && p.y == q.y) {
+                    blackAnthill = makeAnthill();
+                }
             }
-            else offset = 0;
-
-            for (int j = 0; j < 150; j++) {
-                Polygon hex = new Polygon();
-                for (int pt = 0; pt < 6; pt++){
-                    hex.addPoint((int)(xStart + offset + (spacing * j) + hexRadius * Math.sin(pt * 2 * Math.PI / 6)), (int)(yStart+ (spacing * i) +hexRadius * Math.cos(pt*2*Math.PI/6)));
-                    }
-                
-                    if (map.getCell(i, j).isRocky()) {
-                        g.setColor(Color.BLACK);
-                    }
-                    else if (map.getCell(i, j).getRedAnthill()){
-                        g.setColor(Color.RED);
-                    }
-                    else if (map.getCell(i,j).getBlackAnthill()) {
-                        g.setColor(Color.DARK_GRAY);
-                    }
-                    else if (map.getCell(i,j).hasFood() > 0) {
-
-                        g.setColor(Color.YELLOW);
-                    }
-                    else
-                        g.setColor(Color.gray);
-
-                    g.fillPolygon(hex);
-                    setLineThickness(g, 2);
-                    g.setColor(Color.black);
-                    g.drawPolygon(hex);
-                    if (map.getCell(i,j).hasFood() > 0) {
-                        String s = "";
-                        s += map.getCell(i,j).hasFood();
-                        //s+= "Fug";
-                            g.setColor(Color.BLUE);
-                            g.drawString(s, (int) (xStart + offset +(spacing * j) - 4), (int) (yStart+ (spacing * i) + hexRadius - 3) );
-                    }
-                    
-                    /*
-                    for (Ant a : ants) {
-                        if (a.getPosition() == new Point (i , j)) {
-                            g.setColor(Color.RED);
-                            g.drawString("R", (int) (xStart + offset +(spacing * j) - 4), (int) (yStart+ (spacing * i) + hexRadius - 3) );
-                        }
-                    }
-                    * 
-                    */
-                     
-                    
-                    
-                   
-                    
-                /*
-                if (ants[i][j].getColor() == "red") {
-                    g.setColor(Color.RED);
-                    g.drawString("R", (int) (xStart + offset +(spacing * j) - 5), (int) (yStart+ (spacing * i) + hexRadius - 3) );
-                }
-                else if (ants[i][j].getColor() =="black") {
-                    g.setColor(Color.BLACK);
-                    g.drawString("B", (int) (xStart + offset +(spacing * j) - 5), (int) (yStart+ (spacing * i) + hexRadius - 3) );
-                }
-                * 
-                */ 
+        }
+        * 
+        */
+        
+        /*
+        while (!ok) {
+            if (black.x < red.x + 14) {
+                blackAnthill = makeAnthill();
             }
-            
-            
-
-        }       
+            else if (black.x > red.x -14) {
+                blackAnthill = makeAnthill();
+            }
+            else if (black.y > red.y - 14) {
+                blackAnthill = makeAnthill();
+            }
+            else if (black.y < red.y + 14) {
+                blackAnthill = makeAnthill();
+            }
+            else
+                ok = true;
+                break;
+        }
+        * 
+        */
         
-        //Font f2 = new Font("Dialog", Font.BOLD, 100);
+        //System.out.println("got here");
         
-        //g.setFont(f2);
-        if (ants != null) {
-            for (Ant a : ants) {
-                int offset;
-                
-                Point p = a.getPosition();
-                
-                //System.out.println("ant pos: " + a.getPosition());
-                
-                if (p.y % 2 != 0) {
-                    System.out.println("if");
-                    offset = 7;
+        for (Point p : redAnthill) {
+           //System.out.println("got here");
+            getCell(p.x, p.y).setRedAnthill(true);
+        }
+        
+        for (Point p : redAnthill) {
+            for (Point q : blackAnthill) {
+                if (p.x == q.x && p.y == q.y) {
+                    blackAnthill = makeAnthill();
                 }
-                else { 
-                    System.out.println("else");
-                    offset = 0;
-                }
-                
-                String s = "+";
-                if (a.getColor() == Game.Colour.RED) {
-                    g.setColor(Color.RED);
-                    //s += "+";
-                }
-                else {
-                    g.setColor(Color.BLACK);
-                    //s+="+";
-                }
-
-                //g.setColor(Color.RED);
-                //System.out.println("ofset :" + offset);
-                g.drawString(s, (int) (xStart + offset +(spacing * p.x) - 3), (int) (yStart+ (spacing * p.y) + hexRadius - 3) );
-
             }
         }
         
-        
-        
-
-    }
- 
-  public static void setLineThickness(Graphics page, int thickness) {
-    if (thickness < 0) thickness = 0;
-    ((Graphics2D)page).setStroke(new BasicStroke(thickness));
-  }
-  
-  public void updateMap() {
-      
-  }
-    
-    private void setMap(Map map) {
-        this.map = map;
-    }
-    
-    public void getAnts(Ant[] ants) {
-        this.ants = ants;
-    }
-    
-    public static void main(String[] args) throws Exception {
-        
-        AntMapGenerator amg = new AntMapGenerator(150,150);
-        Ant[] ants = new Ant[4];
-        ants[0] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(3, 5)); 
-        ants[1] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(5, 5));
-        ants[2] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(6, 5));
-        ants[3] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(6, 6));
-        
-        
-        //ntWorldPanel awp = new AntWorldPanel();
-        //awp.ants = ants;
-
-        amg.generateMap();
-        map = amg.getMap();
-        
-
-        JFrame frame = new JFrame();
-        JScrollPane scroll = new JScrollPane();
-        AntWorldPanel drawPanel = new AntWorldPanel();
-        
-        drawPanel.getAnts(ants);
-        
-        drawPanel.repaint();
-        
-        for (Ant a : ants) {
-            System.out.println(a.getPosition());
+        for (Point p : blackAnthill) {
+            if (!checkPlaceable(p)) {
+                blackAnthill = makeAnthill();
+            } 
         }
         
-        drawPanel.setPreferredSize(new Dimension(1965, 1965));
-        drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        for (Point p : blackAnthill) {
+            getCell(p.x, p.y).setBlackAnthill(true);
+        }
         
-        scroll.setPreferredSize(new Dimension(1024,768));
+        this.redAnthill = redAnthill;
+        this.blackAnthill = blackAnthill;
         
-        scroll.setViewportView(drawPanel);
-        scroll.getVerticalScrollBar().setUnitIncrement(50);
-        
-        Container contentPane = frame.getContentPane();
-        
-
-        frame.setTitle("Ant World Display");
-        frame.setSize(1920,1080);
-        frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        });
-
-        contentPane.add(scroll);
-
-        frame.show();
     }
     
+    /**
+     * UNDER CONTSTRUCTION - Currently causes stack overflow error
+     * @return an array of Points for a foodblob.
+     */
+    public Point[] makeFoodBlob() {
+        Point[] foodBlob = new Point[25];
+        
+        int x = randInt(1, 149);
+        int y = randInt(1, 149);
+        
+        while (x-6 <= 0 || x+6 >= 149 || y-6 <= 0 || y+6 >= 149) {
+            x = randInt(1,148);
+            y = randInt(1,148);
+        }
+        
+        int rightOrLeft = randInt(0,1);
+        int offset;
+        int[] leftOffset = new int[5];
+        boolean ok = false;
+        
+        //if the foodBlob is left oriented
+        if (rightOrLeft == 1) {
+            leftOffset[0] = 0;
+            leftOffset[1] = -1;
+            leftOffset[2] = -2;
+            leftOffset[3] = -3;
+            leftOffset[4] = -4;
+        }
+        else {
+            for (int n: leftOffset){
+                leftOffset[n] = 0;
+            }
+        }
+        
+        if (y % 2 == 0) {
+            offset = -1;
+        }
+        else
+            offset = 0;
+        
+        int counter = 0;
+        
+        for (int i = x-3; i< x+2; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[0], y-2);
+            counter++;
+        }
+        for (int i = x-2+offset; i < x+3+offset; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[1], y-1);
+            counter++;
+        }
+        for (int i = x-2; i < x+3; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[2], y);
+            counter++;
+        }
+        for (int i = x-1+offset; i < x+4+offset; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[3], y+1);
+            counter++;
+        }
+        for (int i = x-1; i < x+4; i++) {
+            foodBlob[counter] = new Point(i + leftOffset[4], y +2);
+            counter++;
+        }
+        //System.out.println("counter: " + counter);
+        /*
+        for (Point p: foodBlob) {
+            if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149) {
+                foodBlob = makeFoodBlob();
+            }
+        }
+        * 
+        */
+        
+        /*
+        while (!ok) {
+            //System.out.println("while");
+            for (Point p: foodBlob) {
+                if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149) {
+                    foodBlob = makeFoodBlob();
+                    break;
+                }
+            }
+            break;
+        }
+        * 
+        */
+        
+        for (Point p: foodBlob) {
+            //System.out.println(p);
+            //if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149 ) {
+                //System.out.println("x, y : " + p.x + ", " + p.y);
+                //break;
+            //}
+            if (!checkPlaceable(p)) {
+                foodBlob = makeFoodBlob();
+            } 
+        }
+        
+        return foodBlob;
+    }
+    
+    /**
+     * makes and places food blobs
+     */
+    public void placeFoodBlobs() {
+        int counter = 11;
+        
+        while (counter != 0) {
+            Point[] foodBlob = makeFoodBlob();
+            for (Point p: foodBlob) {
+                map.getCell(p).setHasFood(5);
+            }
+            counter--;
+        }
+    }
+    
+    /**
+     * 
+     * @return array of 14 rocks
+     */
+    public Point[] makeRocks() {
+        //int counter = 0;
+        Point[] rocks = new Point[14];
+        
+        /*
+        while(counter < 14) {
+            int x = randInt(2, 148);
+            int y = randInt(2, 148);
+            Point p = new Point(x, y);
+            if (checkPlaceable(p)){
+                rocks[counter] = p;
+                counter++;
+            }
+        }
+        * 
+        */
+        
+        for (int i = 0; i < 14; i ++) {
+            rocks[i] = makeRock();
+        }
+        
+        return rocks;
+    }
+    
+    public Point makeRock() {
+        Point rock;
+        
+        int x = randInt(2,148);
+        int y = randInt(2, 148);
+        Point p = new Point(x, y);
+        
+        if (checkPlaceable(p)) {
+            rock = p;
+        }
+        else {
+            rock = makeRock();
+        }
+        
+        return rock;
+    }
+    
+    /**
+     * places rocks on the map
+     * @param rocks 
+     */
+    public void placeRocks() {
+        Point[] rocks = new Point[14];
+        
+        for (int i = 0; i < 14; i++) {
+            rocks[i] = makeRock();
+        }
+        
+        for (Point p : rocks) {
+            map.getCell(p).rocky = true;
+        }
+    }
+    
+    /**
+     * 
+     * @param min
+     * @param max
+     * @return random int between min and max
+     */
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+        
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+        
+        return randomNum;
+    }
+
 }
