@@ -1,15 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package antmapgui;
-
 import ant.Ant;
 import antmapgenerator.AntMapGenerator;
 import antmapgenerator.Map;
+import game.Game;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 
@@ -21,17 +18,28 @@ public class AntWorldPanel extends JPanel {
     
     //FontMetrics metrics;
     static Map map;
-    //Ant[][] ants;
+    Ant[] ants;
     static final int xStart = 10;
     static final int yStart = 10;
     static final double spacing = 13;
     static final int hexRadius = 8;
-    static final int offset = 7;
+    //static final int offset = 7;
     
     
     
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
+        /*
+        ants = new Ant[2];
+        try {
+            ants[0] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(5, 5));
+            ants[1] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(3, 5));
+        } catch (Exception ex) {
+            Logger.getLogger(AntWorldPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        * 
+        */
         
         Font f = new Font("Dialog", Font.BOLD, 12);
         
@@ -43,7 +51,7 @@ public class AntWorldPanel extends JPanel {
             if (i % 2 != 0) {
                 offset = 7;
             }
-            else offset =0;
+            else offset = 0;
 
             for (int j = 0; j < 150; j++) {
                 Polygon hex = new Polygon();
@@ -74,9 +82,25 @@ public class AntWorldPanel extends JPanel {
                     if (map.getCell(i,j).hasFood() > 0) {
                         String s = "";
                         s += map.getCell(i,j).hasFood();
-                            g.setColor(Color.blue);
+                        //s+= "Fug";
+                            g.setColor(Color.BLUE);
                             g.drawString(s, (int) (xStart + offset +(spacing * j) - 4), (int) (yStart+ (spacing * i) + hexRadius - 3) );
                     }
+                    
+                    /*
+                    for (Ant a : ants) {
+                        if (a.getPosition() == new Point (i , j)) {
+                            g.setColor(Color.RED);
+                            g.drawString("R", (int) (xStart + offset +(spacing * j) - 4), (int) (yStart+ (spacing * i) + hexRadius - 3) );
+                        }
+                    }
+                    * 
+                    */
+                     
+                    
+                    
+                   
+                    
                 /*
                 if (ants[i][j].getColor() == "red") {
                     g.setColor(Color.RED);
@@ -89,37 +113,102 @@ public class AntWorldPanel extends JPanel {
                 * 
                 */ 
             }
-        }        
+            
+            
+
+        }       
+        
+        //Font f2 = new Font("Dialog", Font.BOLD, 100);
+        
+        //g.setFont(f2);
+        if (ants != null) {
+            for (Ant a : ants) {
+                int offset;
+                
+                Point p = a.getPosition();
+                
+                //System.out.println("ant pos: " + a.getPosition());
+                
+                if (p.y % 2 != 0) {
+                    offset = 7;
+                }
+                else { 
+                    offset = 0;
+                }
+                
+                String s = "+";
+                if (a.getColor() == Game.Colour.RED) {
+                    g.setColor(Color.RED);
+                    //s += "+";
+                }
+                else {
+                    g.setColor(Color.BLACK);
+                    //s+="+";
+                }
+
+                //g.setColor(Color.RED);
+                //System.out.println("ofset :" + offset);
+                g.drawString(s, (int) (xStart + offset +(spacing * p.x) - 3), (int) (yStart+ (spacing * p.y) + hexRadius - 3) );
+
+            }
+        }
+        
+        
+        
+
     }
  
   public static void setLineThickness(Graphics page, int thickness) {
     if (thickness < 0) thickness = 0;
     ((Graphics2D)page).setStroke(new BasicStroke(thickness));
   }
+  
+  public void updateMap() {
+      
+  }
     
     private void setMap(Map map) {
         this.map = map;
     }
     
-    public Ant[][] getAnts(Ant[][] ants) {
-        //this.ants = ants;
-        return null;
+    public void getAnts(Ant[] ants) {
+        this.ants = ants;
     }
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         
         AntMapGenerator amg = new AntMapGenerator(150,150);
+        Ant[] ants = new Ant[4];
+        ants[0] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(3, 5)); 
+        ants[1] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(5, 5));
+        ants[2] = new Ant(Game.Colour.RED, 11, 11, 0, true , new Point(6, 5));
+        ants[3] = new Ant(Game.Colour.BLACK, 11, 11, 0, true , new Point(6, 6));
         
+        
+        //ntWorldPanel awp = new AntWorldPanel();
+        //awp.ants = ants;
+
         amg.generateMap();
         map = amg.getMap();
-        //ants = getAnts();
+        
 
         JFrame frame = new JFrame();
         JScrollPane scroll = new JScrollPane();
-        JPanel drawPanel = new AntWorldPanel();
+        AntWorldPanel drawPanel = new AntWorldPanel();
+        
+        drawPanel.getAnts(ants);
+        
+        drawPanel.repaint();
+        
+        /*
+        for (Ant a : ants) {
+            System.out.println(a.getPosition());
+        }
+        * 
+        */
         
         drawPanel.setPreferredSize(new Dimension(1965, 1965));
-        drawPanel.setBorder(BorderFactory.createLineBorder(Color.red));
+        drawPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         
         scroll.setPreferredSize(new Dimension(1024,768));
         
