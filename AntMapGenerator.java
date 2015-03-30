@@ -53,10 +53,18 @@ public class AntMapGenerator {
         //a.map[5][0] = 2;
         a.placeAnthills();
         a.placeFoodBlobs();
+        a.placeRocks(a.makeRocks());
         a.map.printMap();
         //a.makeRedAnthill();
         //a.makeAnthill();
         
+    }
+    
+    public void generateMap() {
+        placeAnthills();
+        placeFoodBlobs();
+        placeRocks(makeRocks());
+        map.printMap();
     }
     
     /**
@@ -235,6 +243,7 @@ public class AntMapGenerator {
         Point[] blackAnthill = makeAnthill();
         boolean ok = false;        
         
+        //ant hill
         Point red = redAnthill[63];
         Point black = blackAnthill[63];
         
@@ -251,6 +260,18 @@ public class AntMapGenerator {
         * 
         */
         
+        /*
+        for (Point p : redAnthill) {
+            for (Point q : blackAnthill) {
+                if (p.x == q.x && p.y == q.y) {
+                    blackAnthill = makeAnthill();
+                }
+            }
+        }
+        * 
+        */
+        
+        /*
         while (!ok) {
             if (black.x < red.x + 14) {
                 blackAnthill = makeAnthill();
@@ -268,6 +289,8 @@ public class AntMapGenerator {
                 ok = true;
                 break;
         }
+        * 
+        */
         
         //System.out.println("got here");
         
@@ -275,6 +298,21 @@ public class AntMapGenerator {
            //System.out.println("got here");
             getCell(p.x, p.y).setRedAnthill(true);
         }
+        
+        for (Point p : redAnthill) {
+            for (Point q : blackAnthill) {
+                if (p.x == q.x && p.y == q.y) {
+                    blackAnthill = makeAnthill();
+                }
+            }
+        }
+        
+        for (Point p : blackAnthill) {
+            if (!checkPlaceable(p)) {
+                blackAnthill = makeAnthill();
+            } 
+        }
+        
         for (Point p : blackAnthill) {
             getCell(p.x, p.y).setBlackAnthill(true);
         }
@@ -346,16 +384,18 @@ public class AntMapGenerator {
             foodBlob[counter] = new Point(i + leftOffset[4], y +2);
             counter++;
         }
-        System.out.println("counter: " + counter);
-        
+        //System.out.println("counter: " + counter);
+        /*
         for (Point p: foodBlob) {
             if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149) {
                 foodBlob = makeFoodBlob();
             }
         }
+        * 
+        */
         
         while (!ok) {
-            System.out.println("while");
+            //System.out.println("while");
             for (Point p: foodBlob) {
                 if (p.x < 0 || p.x > 149 || p.y < 0 || p.y >149) {
                     foodBlob = makeFoodBlob();
@@ -379,6 +419,9 @@ public class AntMapGenerator {
         return foodBlob;
     }
     
+    /**
+     * makes and places food blobs
+     */
     public void placeFoodBlobs() {
         int counter = 11;
         
@@ -388,6 +431,61 @@ public class AntMapGenerator {
                 map.getCell(p).setHasFood(5);
             }
             counter--;
+        }
+    }
+    
+    /**
+     * 
+     * @return array of 14 rocks
+     */
+    public Point[] makeRocks() {
+        int counter = 0;
+        Point[] rocks = new Point[14];
+        
+        /*
+        while(counter < 14) {
+            int x = randInt(2, 148);
+            int y = randInt(2, 148);
+            Point p = new Point(x, y);
+            if (checkPlaceable(p)){
+                rocks[counter] = p;
+                counter++;
+            }
+        }
+        * 
+        */
+        
+        for (int i = 0; i < 14; i ++) {
+            rocks[i] = makeRock();
+        }
+        
+        return rocks;
+    }
+    
+    public Point makeRock() {
+        Point rock;
+        
+        int x = randInt(2,148);
+        int y = randInt(2, 148);
+        Point p = new Point(x, y);
+        
+        if (checkPlaceable(p)) {
+            rock = p;
+        }
+        else {
+            rock = makeRock();
+        }
+        
+        return rock;
+    }
+    
+    /**
+     * places rocks on the map
+     * @param rocks 
+     */
+    public void placeRocks(Point[] rocks) {
+        for (Point p : rocks) {
+            map.getCell(p).rocky = true;
         }
     }
     
