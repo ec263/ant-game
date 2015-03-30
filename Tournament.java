@@ -18,7 +18,8 @@ public class Tournament {
     ArrayList<Statistics> stats;
 
     /**
-     * Constructor, initializes variables
+     * Constructor, initialises variables
+     * Also will probably create the GUIs
      */
     public Tournament() {
         roster = new ArrayList();
@@ -31,7 +32,7 @@ public class Tournament {
 
     /**
      * loads maps into the tournament. 
-     * @param maps 
+     * @param maps The maps to load
      * 
      */
     public void loadMaps(ArrayList<Map> maps) {
@@ -41,7 +42,7 @@ public class Tournament {
     }
 
     /**
-     * @param brain 
+     * @param brain The brains to load
      *  loads antBrains into the tournament
      */
     public void loadBrains(ArrayList<AntBrain> brain) {
@@ -52,7 +53,8 @@ public class Tournament {
 
     /**
      * Every ant brain to play against each other ant brain twice, not including itself, on each map available.
-     * Create a game for every match up created this way.
+     * Create a game for every match up created this way and add it to the roster of games to play
+     * Will automatically generate more maps if the number of maps is below a certain amount (still need to decide that amount and trigger the map generator)
      */
     public void createMatchups() {
         //If not enough maps generate more
@@ -67,13 +69,16 @@ public class Tournament {
             }
         }
     }
-    
+    /**
+     * Creates a single game between the first two brains and the first map and add it to the roster
+     */
     public void create1v1Match(){
         roster.add(new Game(worlds.get(0), antBrains.get(0), antBrains.get(1)));
     }
 
     /**
      * Play each game and then display the statistics for that game
+     * Probably obsolete
      */
     public void playGames() {
         for (Game g : roster) {
@@ -83,9 +88,14 @@ public class Tournament {
         }
     }
     
+    /**
+     * Removes the first game from the roster and plays it
+     * Needs more work to integrate the GUI into it
+     * @return The statistics for that game, stats are also added to an arraylist
+     */
     public Statistics playNextGame(){
         Game g=roster.remove(0);
-        for (int i=0; i<300000; i++){
+        for (int i=0; i<300000; i++){ 
             g.nextTurn();
             //gui.updateGui(g.getMap(), g.getAnts());
         }
@@ -93,6 +103,10 @@ public class Tournament {
         return g.getStatistics();
     }
     
+    /**
+     * Generates the scores for each ant brain from the statistics arraylist
+     * @return The scores in a hashtable, the brain names are the keys, the scores are the values, there is no particular ordering in the hashmap
+     */
     public HashMap<String, Integer> generateScores(){
         HashMap<String, Integer> scores = new HashMap();
         for (Statistics s: stats){
@@ -110,6 +124,12 @@ public class Tournament {
         return scores;
     }
     
+    /**
+     * Adds a score to the hashmap, internal method
+     * @param scores The hashmap
+     * @param name The name of the brain to add a score for
+     * @param score The score to add
+     */
     private void addScore(HashMap<String, Integer> scores, String name, int score){
         if (scores.containsKey(name)){
             score=score+scores.get(name);
