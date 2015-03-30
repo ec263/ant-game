@@ -20,6 +20,12 @@ public class Game {
     private Statistics statistics;
     
     
+    /**
+     * Constructor, initialises Statistics and Ants
+     * @param map The map the game should take place on
+     * @param redBrain The brain for the red ants
+     * @param blackBrain The brain for the black ants
+     */
     public Game(Map map, AntBrain redBrain, AntBrain blackBrain){
         this.map=map;
         cleanMap=map;
@@ -69,37 +75,74 @@ public class Game {
         
     }
     
+    /**
+     * Alternate constructor, doesn't initialise anything, for use with newMap method
+     * Likely obsolete
+     * @param redBrain
+     * @param blackBrain 
+     */
     public Game(AntBrain redBrain, AntBrain blackBrain){
         this.redBrain=redBrain;
         this.blackBrain=blackBrain;
     }
     
+    /**
+     * Returns new Game created using standard constructor from existing brains and supplied map
+     * Likely obsolete
+     * @param map
+     * @return New game object
+     */
     public Game newMap(Map map){
         return new Game(map, redBrain, blackBrain);
     }
     
+    /**
+     * Returns new game object with the ant brains controlling the other colour
+     * Likely obsolete
+     * @return new game
+     */
     public Game swapSides(){
         return new Game(cleanMap, blackBrain, redBrain);
     }
     
+    /**
+     * Returns the statistics from the game
+     * @return the statistics
+     */
     public Statistics getStatistics(){
         return statistics;
     }
     
+    /**
+     * Returns the map the game is taking place on
+     * @return The map
+     */
     public Map getMap(){
         return map;
     }
     
+    /**
+     * Returns an array list of the ants
+     * @return the ants
+     */
     public ArrayList<Ant> getAnts(){
         return ants;
     }
     
+    /**
+     * Runs step function for every ant, each ant advances one state (unless it is resting)
+     */
     public void nextTurn(){
         for (int i=0; i<254; i++){
             step(i);
         }
     }
 
+    /**
+     * Advances the ant by one state
+     * Mostly supplied as pseudocode
+     * @param id the ant to advance
+     */
     private void step(int id){
         if (antIsAlive(id)){
             Point point = findAnt(id);
@@ -189,6 +232,13 @@ public class Game {
         }
     }
     
+    /**
+     * Takes a direction and gives the new direction resulting from turning left of right
+     * Mostly supplied as pseudocode
+     * @param lr Turn left or right
+     * @param dir Initial direction
+     * @return New direction
+     */
     private int turn(leftOrRight lr, int dir){
         if (lr==leftOrRight.LEFT){
             return (dir+5)%6;
@@ -199,6 +249,14 @@ public class Game {
         return -1; //Shouldn't happen
     }
     
+    /**
+     * Returns the cell in the position relative to the point and directions supplied
+     * Mostly supplied as pseudocode
+     * @param p The point
+     * @param d The direction you are facing
+     * @param sd The direction of the new cell
+     * @return The point representing the position of the new cell
+     */
     private Point sensedCell(Point p, int d, Direction sd){
         if (sd==Direction.HERE){
             return p;
@@ -215,6 +273,13 @@ public class Game {
         return null;
     }
     
+    /**
+     * Returns the point representing the cell in the direction specified relative to the cell specified
+     * Mostly supplied as pseudocode
+     * @param p The point you are at
+     * @param d The direction the adjacent cell is in
+     * @return Point representing the position of that cell
+     */
     private Point adjacentCell(Point p, int d){
         switch (d){
           case 0: return new Point(p.x+1, p.y);
@@ -227,14 +292,28 @@ public class Game {
         return null;
     }
     
+    /**
+     * Checks if the supplied integer is even
+     * @param i The integer to check
+     * @return True if it is even, false if it isn't
+     */
     private boolean even(int i){
         return i%2==0;
     }
     
+    /**
+     * Enum type representing the two colours
+     */
     public enum Colour{
         RED, BLACK
     }
     
+    /**
+     * Returns the colour that is not the supplied colour
+     * Mostly supplied as pseudocode
+     * @param c The supplied colour
+     * @return The colour that is not that
+     */
     private Colour otherColour(Colour c){
         if (c==Colour.BLACK){
             return Colour.RED;
@@ -242,34 +321,88 @@ public class Game {
         return Colour.BLACK;
     }
     
+    /**
+     * Checks if the cell at the position represented by the given point is rocky or not
+     * Mostly supplied as pseudocode
+     * @param p The point to check
+     * @return True if it is rocky, false if it isn't
+     */
     private boolean rocky(Point p){
         return map.getCell(p).isRocky();
     }
     
+    /**
+     * Returns the amount of food at the cell represented by the supplied point
+     * Mostly supplied as pseudocode
+     * @param p The point to check
+     * @return The amount of food
+     */
     private int foodAt(Point p){
         return map.getCell(p).hasFood();
     }
     
+    /**
+     * Sets the amount of food at the cell represented by the supplied point to the supplied value
+     * Mostly supplied as pseudocode
+     * @param p The point
+     * @param f The value
+     */
     private void setFoodAt(Point p, int f){
         map.getCell(p).setHasFood(f);
     }
     
+    /**
+     * Checks if there is an anthill of the specified colour at the cell at the supplied point
+     * Mostly supplied as pseudocode
+     * @param p The point to check
+     * @param c The colour
+     * @return True if there is an anthill of that colour at that point, false otherwise
+     */
     private boolean anthillAt(Point p, Colour c){
         return map.getCell(p).getAnthill(c);
     }
 
+    /**
+     * Sets the chemical marker of the specified type and colour in the specified cell to be true
+     * Mostly supplied as pseudocode
+     * @param p The point the cell is at
+     * @param c The colour of the marker
+     * @param i The type of the marker
+     */
     private void setMarkerAt(Point p, Colour c, int i){
         map.getCell(p).setMarker(i, true, c);
     }
     
+    /**
+     * Sets the chemical marker of the specified type and colour in the specified cell to be false
+     * Mostly supplied as pseudocode
+     * @param p The point the cell is at
+     * @param c The colour of the marker
+     * @param i The type of the marker
+     */
     private void clearMarkerAt (Point p, Colour c, int i){
         map.getCell(p).setMarker(i, false, c);
     }
     
+    /**
+     * Checks the chemical marker of the specified type and colour in the specified cell
+     * Mostly supplied as pseudocode
+     * @param p The point the cell is at
+     * @param c The colour of the marker
+     * @param i The type of the marker
+     * @return True if that marker is there, false otherwise
+     */
     private boolean checkMarkerAt(Point p, Colour c, int i){
         return map.getCell(p).getMarker(i, c);
     }
     
+    /**
+     * Checks if any chemical marker of the specified colour is in the specified cell
+     * Mostly supplied as pseudocode
+     * @param p The point the cell is at
+     * @param c The colour of the marker
+     * @return True if any marker of that colour is there, false otherwise
+     */
     private boolean checkAnyMarker(Point p, Colour c){
         boolean[] markers=map.getCell(p).getMarkers(c);
         for (int i=0; i<markers.length; i++){
@@ -280,7 +413,14 @@ public class Game {
         return false;
     }
     
-    
+    /**
+     * Checks if the cell at the supplied point matches the supplied condition
+     * Mostly supplied as pseudocode
+     * @param p The point to check
+     * @param cond The condition to check
+     * @param c The colour needed for some conditions
+     * @return True if the cell matches that condition, false otherwise
+     */
     private boolean cellMatches(Point p, Condition cond, Colour c){
         if(cond==Condition.ROCK){
             return rocky(p);
@@ -315,6 +455,13 @@ public class Game {
         return false;
     }
     
+    /**
+     * Returns the instruction for the ant brain of the supplied colour at the supplied state
+     * Mostly supplied as pseudocode
+     * @param c The colour
+     * @param s The state
+     * @return The instruction
+     */
     private Instruction getInstruction(Colour c, int s){
         if (c==Colour.RED){
             return redBrain.instructions.get(s);
@@ -322,10 +469,23 @@ public class Game {
         return blackBrain.instructions.get(s);
     }
     
+    /**
+     * Returns the colour of the ant
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @return Its colour
+     */
     private Colour colour(Ant a){
         return a.getColor();
     }
     
+    /**
+     * Returns the number of ants of the specified colour are in the cells around the supplied cell
+     * Mostly supplied as pseudocode
+     * @param p The point the cell is at
+     * @param c The colour
+     * @return The number of ants
+     */
     private int adjacentAnts (Point p, Colour c){
         int n=0;
         for (int d=0; d<=5; d++){
@@ -337,25 +497,26 @@ public class Game {
         return n;
     }
     
+    /**
+     * Checks if the ant at the supplied point is surrounded by ants of the other colour
+     * If it is it kills that ant and drops the right amount of food
+     * Mostly supplied as pseudocode
+     * @param p The point to check
+     */
     private void checkForSurroundedAntAt(Point p){
         if (someAntIsAt(p)){
             Ant a = antAt(p);
             if (adjacentAnts(p, otherColour(colour(a)))>=5){
-                if (hasFood(a)){
-                    setFoodAt(p, (foodAt(p)+1));
-                }
                 killAntAt(p);
-                setFoodAt(p, (foodAt(p)+3));
-                statistics.mapFood+=3;
-                if (anthillAt(p, Colour.BLACK)){
-                    statistics.blackHillFood+=3;
-                } else {
-                    statistics.redHillFood+=3;
-                }
             }
         }
     }
     
+    /**
+     * Runs checkForSurroundedAntAt on the supplied cell and all directly adjacent cells
+     * Mostly supplied as pseudocode
+     * @param p The cell
+     */
     private void checkForSurroundedAnts(Point p){
         checkForSurroundedAntAt(p);
         for (int d=0; d<=5; d++){
@@ -365,6 +526,10 @@ public class Game {
     
     private ArrayList<BigInteger> randomintS;
     
+    /**
+     * Initialises the random number generator, called by the constructor
+     * @param seed The seed to initialise the rng with
+     */
     private void initialiseRandomint(BigInteger seed){
         randomintS=new ArrayList();
         for (int i=0; i<4; i++){
@@ -379,6 +544,11 @@ public class Game {
         }
     }
     
+    /**
+     * Returns a random number between 0 and n-1 inclusive
+     * @param n n
+     * @return Random number
+     */
     private int randomint(int n){
         if (n<1){
             return 0;
@@ -394,22 +564,52 @@ public class Game {
         return news.intValue();
     }
     
+    /**
+     * Gets the state that ant is in
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @return Its state
+     */
     private int state(Ant a){
         return a.getState();
     }
     
+    /**
+     * Gets the ant's resting timer
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @return Its resting timer
+     */
     private int resting(Ant a){
         return a.getResting();
     }
     
+    /**
+     * Gets the direction the ant is facing
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @return Its direction
+     */
     private int direction(Ant a){
         return a.getDirection();
     }
     
+    /**
+     * Checks if the ant has any food
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @return True if it has food, false if it doesn't
+     */
     private boolean hasFood(Ant a){
         return a.has_food();
     }
     
+    /**
+     * Sets the state of the ant to the value supplied
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @param s The state
+     */
     private void setState(Ant a, int s){
         try {
             a.setState(s);
@@ -418,10 +618,22 @@ public class Game {
         }//Should always work
     }
     
+    /**
+     * Sets the resting timer of the ant to the supplied value
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @param s The value
+     */
     private void setResting(Ant a, int s){
         a.setResting(s);
     }
     
+    /**
+     * Sets the direction of the ant to the supplied value
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @param d The value
+     */
     private void setDirection(Ant a, int d){
         try {
             a.setDirection(d);
@@ -430,6 +642,12 @@ public class Game {
         }//Should always work
     }
     
+    /**
+     * Sets if the ant has food or not, also updates statistics
+     * Mostly supplied as pseudocode
+     * @param a The ant
+     * @param b True if it should have food, false if it shouldn't
+     */
     private void setHasFood(Ant a, boolean b){
         a.setHas_food(b);
         if (a.getColor()==Colour.BLACK){
@@ -447,6 +665,12 @@ public class Game {
         }
     }
     
+    /**
+     * Checks if there is any ant at the specified point
+     * Mostly supplied as pseudocode
+     * @param p The point
+     * @return True if there is an ant there, false otherwise
+     */
     private boolean someAntIsAt(Point p){
         if (p.x<0||p.x>=map.height||p.y<0||p.y>=map.width){
             return false;
@@ -459,6 +683,12 @@ public class Game {
         return false;
     }
     
+    /**
+     * Returns the ant at the specified position
+     * Mostly supplied as pseudocode
+     * @param p The position
+     * @return The ant there
+     */
     private Ant antAt(Point p){
         for (Ant a:ants){
             if (a.getPosition()==p){
@@ -468,28 +698,71 @@ public class Game {
         return null;
     }
     
+    /**
+     * Sets the position of the ant to the supplied point
+     * Mostly supplied as pseudocode
+     * @param p The point
+     * @param a The ant
+     */
     private void setAntAt(Point p, Ant a){
         a.setPosition(p);
     }
     
+    /**
+     * Sets the ant at the supplied position to have a null position
+     * Mostly supplied as pseudocode
+     * @param p The positions
+     */
     private void clearAntAt(Point p){
         antAt(p).setPosition(null);
     }
     
+    /**
+     * Checks if the ant with the supplied id is alive
+     * Dead ants have their position as -1, -1
+     * Mostly supplied as pseudocode
+     * @param id The id of the ant
+     * @return True if it is alive, false if it isn't
+     */
     private boolean antIsAlive(int id){
         return(!(ants.get(id).getPosition().equals(new Point(-1, -1))));
     }
     
+    /**
+     * Finds the position of the ant with the supplied id
+     * Mostly supplied as pseudocode
+     * @param id The id of the ant
+     * @return Its position
+     */
     private Point findAnt(int id){
         return ants.get(id).getPosition();
     }
     
+    /**
+     * Kills the ant at the specified point
+     * Dead ants have position -1, -1
+     * Also updates statistics
+     * Mostly supplied as pseudocode
+     * @param p The point
+     */
     private void killAntAt(Point p){
         Ant a=antAt(p);
         if(a.has_food()){
             setHasFood(a, false);
             setFoodAt(p, foodAt(p)+1);
             statistics.mapFood++;
+            if (anthillAt(p, Colour.BLACK)){
+                statistics.blackHillFood++;
+            } else {
+                statistics.redHillFood++;
+            }
+        }
+        setFoodAt(p, (foodAt(p)+3));
+        statistics.mapFood+=3;
+        if (anthillAt(p, Colour.BLACK)){
+            statistics.blackHillFood+=3;
+        } else {
+            statistics.redHillFood+=3;
         }
         a.setPosition(new Point(-1, -1));
         if(colour(antAt(p))==Colour.BLACK){
