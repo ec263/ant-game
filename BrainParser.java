@@ -74,6 +74,8 @@ public class BrainParser {
         BufferedReader r = new BufferedReader(new FileReader("C:\\" + FileName + ".txt")); // looks for the file creating a path from the given filename
 
         s = r.readLine();
+        
+        if (s == null) {throw new IOException();}
 
         while (s != null) {
             stringList.add(s); // adds each string line of the file to an arraylist
